@@ -28,8 +28,8 @@ class CustomerSettings extends StatelessWidget {
       appBarTitle: Text(MyTable.getStringByLocale(
           'Customers data', context.read<DataCenter>().locale)),
       child: Column(
-        children: [
-          SwitchListTile(
+        children: const [
+          /*SwitchListTile(
             title: Text(MyTable.getStringByLocale(
                 'Add e-mail field', context.read<DataCenter>().locale)),
             value: context.watch<DataCenter>().addCustomerEmailField,
@@ -42,7 +42,7 @@ class CustomerSettings extends StatelessWidget {
             value: context.read<DataCenter>().addCustomerAddressField,
             onChanged: (bool value) =>
                 context.read<DataCenter>().addCustomerAddressField = value,
-          ),
+          ),*/
         ],
       ),
     );
@@ -185,6 +185,7 @@ class AddCustomer extends StatelessWidget {
                             context.read<DataCenter>().locale);
                       }
                     }
+
                     return null;
                   },
                   decoration: InputDecoration(
