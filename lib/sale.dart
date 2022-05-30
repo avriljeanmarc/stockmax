@@ -73,12 +73,16 @@ class AddSale extends StatelessWidget {
     List<String> itemCodeList = context.read<DataCenter>().getItemCodeList();
     String _selectedValue = itemCodeList.isNotEmpty ? itemCodeList[0] : '';
     List<DropdownMenuItem<String>> itemCodeDropDownMenuItem = [];
+
     for (int i = 0; i < itemCodeList.length; i++) {
       itemCodeDropDownMenuItem.add(DropdownMenuItem(
         child: Text(itemCodeList[i]),
         value: itemCodeList[i],
       ));
     }
+
+    double _quantityInStock =
+        context.read<DataCenter>().getItemQuantityInStock(_selectedValue);
 
     List<String> customerCodeList =
         context.read<DataCenter>().getCustomerCodeList();
@@ -144,6 +148,27 @@ class AddSale extends StatelessWidget {
                   TextFormField(
                     onSaved: (newValue) => _saleCode = newValue,
                     validator: (value) {
+                      bool isThere = false;
+                      if (value != null) {
+                        if (value.isEmpty) {
+                          return MyTable.getStringByLocale('Field is required',
+                              context.read<DataCenter>().locale);
+                        }
+
+                        context.read<DataCenter>().saleList.forEach((item) {
+                          if (item.saleCode!
+                                  .toLowerCase()
+                                  .replaceAll(' ', '') ==
+                              value.toLowerCase().replaceAll(' ', '')) {
+                            isThere = true;
+                          }
+                        });
+
+                        if (isThere) {
+                          return MyTable.getStringByLocale('Duplicated value',
+                              context.read<DataCenter>().locale);
+                        }
+                      }
                       return null;
                     },
                     decoration: InputDecoration(
@@ -166,6 +191,9 @@ class AddSale extends StatelessWidget {
                     onChanged: (selectedValue) {
                       setState(() {
                         _selectedValue = selectedValue as String;
+                        _quantityInStock = context
+                            .read<DataCenter>()
+                            .getItemQuantityInStock(_selectedValue);
                       });
                     },
                   ),
@@ -192,6 +220,19 @@ class AddSale extends StatelessWidget {
                     keyboardType: TextInputType.number,
                     onSaved: (newValue) => _itemQuantity = newValue,
                     validator: (value) {
+                      if (value != null) {
+                        if (value.isEmpty) {
+                          return MyTable.getStringByLocale('Field is required',
+                              context.read<DataCenter>().locale);
+                        }
+
+                        double? quantity = double.tryParse(value);
+                        if (quantity! > _quantityInStock) {
+                          return MyTable.getStringByLocale('Insufficient stock',
+                              context.read<DataCenter>().locale);
+                        }
+                      }
+
                       return null;
                     },
                     decoration: InputDecoration(
@@ -212,6 +253,13 @@ class AddSale extends StatelessWidget {
                     onSaved: (newValue) =>
                         _saleDate = DateFormat('MM/dd/yyyy').format(_datetime!),
                     validator: (value) {
+                      if (value != null) {
+                        if (value.isEmpty) {
+                          return MyTable.getStringByLocale('Field is required',
+                              context.read<DataCenter>().locale);
+                        }
+                      }
+
                       return null;
                     },
                     decoration: InputDecoration(
@@ -224,7 +272,7 @@ class AddSale extends StatelessWidget {
                                 context: context,
                                 initialDate: DateTime.now(),
                                 firstDate: DateTime.now(),
-                                lastDate: DateTime(3000))
+                                lastDate: DateTime(5000))
                             .then((value) => setState(() {
                                   _datetime = value;
                                 })),
@@ -422,14 +470,14 @@ class SaleSettings extends StatelessWidget {
       appBarTitle: Text(MyTable.getStringByLocale(
           'Sales data', context.read<DataCenter>().locale)),
       child: Column(
-        children: [
-          SwitchListTile(
+        children: const [
+          /*SwitchListTile(
             title: Text(MyTable.getStringByLocale(
                 'Add customer field', context.read<DataCenter>().locale)),
             value: context.watch<DataCenter>().addSaleCustomerCodeField,
             onChanged: (bool value) =>
                 context.read<DataCenter>().addSaleCustomerCodeField = value,
-          ),
+          ),*/
         ],
       ),
     );

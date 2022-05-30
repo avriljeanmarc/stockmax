@@ -349,6 +349,16 @@ class DataCenter extends ChangeNotifier {
     notifyListeners();
   }
 
+  double getItemQuantityInStock(String itemCode) {
+    double quantity = 0.0;
+    for (MyItem element in _itemList) {
+      if (element.itemCode == itemCode) {
+        quantity = element.itemQuantity!;
+      }
+    }
+    return quantity;
+  }
+
   List<String> getItemCodeList() {
     List<String> itemCodeList = [];
     for (int i = 0; i < _itemList.length; i++) {

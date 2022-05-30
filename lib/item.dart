@@ -28,8 +28,8 @@ class ItemSettings extends StatelessWidget {
       appBarTitle: Text(MyTable.getStringByLocale(
           'Items data', context.read<DataCenter>().locale)),
       child: Column(
-        children: [
-          SwitchListTile(
+        children: const [
+          /*SwitchListTile(
             title: Text(MyTable.getStringByLocale(
                 'Add description field', context.read<DataCenter>().locale)),
             value: context.watch<DataCenter>().addItemDescriptionField,
@@ -56,7 +56,7 @@ class ItemSettings extends StatelessWidget {
             value: context.read<DataCenter>().addItemCategoryField,
             onChanged: (bool value) =>
                 context.read<DataCenter>().addItemCategoryField = value,
-          ),
+          ),*/
         ],
       ),
     );

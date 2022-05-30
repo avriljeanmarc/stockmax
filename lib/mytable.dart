@@ -632,6 +632,13 @@ class MyTable {
       }
     }
 
+    if (str == 'Insufficient stock') {
+      if (locale == 'FR') {
+        _translatedString = 'Stock insuffisant';
+        return _translatedString;
+      }
+    }
+
     return _translatedString;
 
 //StatefulBuilder(builder: (context, setState){})
