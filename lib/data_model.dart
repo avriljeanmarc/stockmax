@@ -41,19 +41,45 @@ class MySupplier {
 }
 
 class MyCommand {
-  final String commandCode;
-  final String itemCode;
-  final double itemQuantity;
-  final String providerCode;
-  final DateTime commandDate;
+  final String? commandCode;
+  final String? itemCode;
+  final double? itemQuantity;
+  final String? supplierCode;
+  final String? commandDate;
 
   const MyCommand({
     required this.commandCode,
     required this.itemCode,
     required this.itemQuantity,
-    this.providerCode = '',
+    this.supplierCode = '',
     required this.commandDate,
   });
+
+  Map<String, Object?> toJson() => {
+        MyTable.commandCodeField: commandCode ?? '',
+        MyTable.itemCodeField: itemCode ?? '',
+        MyTable.itemQuantityField: itemQuantity ?? 0.0,
+        MyTable.supplierCodeField: supplierCode ?? '',
+        MyTable.commandDateField: commandDate ?? '',
+      };
+
+  static MyCommand fromJson(Map<String, Object?> json) => MyCommand(
+        commandCode: json[MyTable.commandCodeField] as String,
+        itemCode: json[MyTable.itemCodeField] as String,
+        itemQuantity: json[MyTable.itemQuantityField] as double,
+        supplierCode: json[MyTable.supplierCodeField] as String,
+        commandDate: json[MyTable.commandDateField] as String,
+      );
+
+  static MyCommand copy(MyCommand command) {
+    return MyCommand(
+      commandCode: command.commandCode ?? '',
+      itemCode: command.itemCode ?? '',
+      itemQuantity: command.itemQuantity ?? 0.0,
+      supplierCode: command.supplierCode ?? '',
+      commandDate: command.commandDate ?? '',
+    );
+  }
 }
 
 class MyItemPriceAtDate {
@@ -91,11 +117,11 @@ class MyItem {
 
   const MyItem({
     required this.itemCode,
-    this.itemDescription,
-    this.itemQuantity,
-    this.itemUnit,
-    this.itemCategory,
-    this.itemQuality,
+    this.itemDescription = '',
+    this.itemQuantity = 0.0,
+    this.itemUnit = '',
+    this.itemCategory = '',
+    this.itemQuality = '',
   });
 
   Map<String, Object?> toJson() => {
@@ -239,7 +265,9 @@ class DataCenter extends ChangeNotifier {
   List<MySupplier> _supplierList = [];
   List<MySale> _saleList = [];
   List<MyItemPriceAtDate> _itemPriceAtDateList = [];
+  List<MyCommand> _commandList = [];
   //For settings purpose
+
   bool _addItemDescriptionField = false;
   bool _addItemQualityField = false;
   bool _addItemUnitField = false;
@@ -262,91 +290,63 @@ class DataCenter extends ChangeNotifier {
         prefs.getBool('addItemDescriptionField') ?? false;
     _addItemQualityField = prefs.getBool('addItemQualityField') ?? false;
     _addItemUnitField = prefs.getBool('addItemUnitField') ?? false;
-    _addItemCategoryField = prefs.getBool('addItemCategoryField') ?? false;
+    _addItemCategoryField = prefs.getBool('addItemCategoryField') ?? false;*/
 
-    _addCustomerAddressField =
-        prefs.getBool('addCustomerAddressField') ?? false;
-    _addCustomerEmailField = prefs.getBool('addCustomerEmailField') ?? false;
-    _addSaleCustomerCodeField =
-        prefs.getBool('addSaleCustomerCodeField') ?? false;*/
     _locale = prefs.getString('locale') ?? 'FR';
   }
 
   bool get addCustomerAddressField => _addCustomerAddressField;
   set addCustomerAddressField(bool value) {
     _addCustomerAddressField = value;
-    /*if (value) {
-      _setUserSettings('addCustomerAddressField', value);
-    } else {
-      _removeUserSettings('addCustomerAddressField');
-    }*/
     notifyListeners();
   }
 
   bool get addCustomerEmailField => _addCustomerEmailField;
   set addCustomerEmailField(bool value) {
     _addCustomerEmailField = value;
-    /*if (value) {
-      _setUserSettings('addCustomerEmailField', value);
-    } else {
-      _removeUserSettings('addCustomerEmailField');
-    }*/
     notifyListeners();
   }
 
   bool get addItemDescriptionField => _addItemDescriptionField;
   set addItemDescriptionField(bool value) {
     _addItemDescriptionField = value;
-    /*if (value) {
-      _setUserSettings('addItemDescriptionField', value);
-    } else {
-      _removeUserSettings('addItemDescriptionField');
-    }*/
     notifyListeners();
   }
 
   bool get addItemQualityField => _addItemQualityField;
   set addItemQualityField(bool value) {
     _addItemQualityField = value;
-    /*if (value) {
-      _setUserSettings('addItemQualityField', value);
-    } else {
-      _removeUserSettings('addItemQualityField');
-    }*/
     notifyListeners();
   }
 
   bool get addItemUnitField => _addItemUnitField;
   set addItemUnitField(bool value) {
     _addItemUnitField = value;
-    /*if (value) {
-      _setUserSettings('addItemUnitField', value);
-    } else {
-      _removeUserSettings('addItemUnitField');
-    }*/
     notifyListeners();
   }
 
   bool get addItemCategoryField => _addItemCategoryField;
   set addItemCategoryField(bool value) {
     _addItemCategoryField = value;
-    /*if (value) {
-      _setUserSettings('addItemCategoryField', value);
-    } else {
-      _removeUserSettings('addItemCategoryField');
-    }*/
     notifyListeners();
   }
 
   bool get addSaleCustomerCodeField => _addSaleCustomerCodeField;
   set addSaleCustomerCodeField(bool value) {
     _addSaleCustomerCodeField = value;
-    /*if (value) {
-      _setUserSettings('addSaleCustomerCodeField', value);
-    } else {
-      _removeUserSettings('addSaleCustomerCodeField');
-    }*/
     notifyListeners();
+  }
+
+  void resetAllNotDefaultFields() {
+    _addItemDescriptionField = false;
+    _addItemQualityField = false;
+    _addItemUnitField = false;
+    _addItemCategoryField = false;
+
+    _addCustomerAddressField = false;
+    _addCustomerEmailField = false;
+
+    _addSaleCustomerCodeField = false;
   }
 
   double getItemQuantityInStock(String itemCode) {
@@ -357,6 +357,16 @@ class DataCenter extends ChangeNotifier {
       }
     }
     return quantity;
+  }
+
+  MyItem? getItemByCode(String itemCode) {
+    MyItem? item;
+    for (MyItem element in _itemList) {
+      if (element.itemCode == itemCode) {
+        item = element;
+      }
+    }
+    return item;
   }
 
   List<String> getItemCodeList() {
@@ -445,9 +455,21 @@ class DataCenter extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateItem(int index, MyItem item) async {
-    await _database.updateItem(item, _itemList[index]);
-    _itemList[index] = item;
+  void updateItem(MyItem item,
+      {int index = -1500, String itemCode = ''}) async {
+    int thisindex = index;
+    if (itemCode.isNotEmpty) {
+      for (int i = 0; i < _itemList.length; i++) {
+        if (_itemList[i].itemCode == itemCode) {
+          thisindex = i;
+          break;
+        }
+      }
+    }
+
+    await _database.updateItem(item, _itemList[thisindex]);
+    _itemList[thisindex] = item;
+
     _saleList = await _database.readAllSales();
     _itemPriceAtDateList = await _database.readAllItemPriceAtDates();
     notifyListeners();
@@ -503,6 +525,7 @@ class DataCenter extends ChangeNotifier {
     return;
   }
 
+  List<MyCommand> get commandList => _commandList;
   List<MyItem> get itemList => _itemList;
   List<MyCustomer> get customerList => _customerList;
   List<MySupplier> get supplierList => _supplierList;

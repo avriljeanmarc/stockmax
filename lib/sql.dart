@@ -108,6 +108,21 @@ class StockmaxDatabase {
 
     ''');
 
+    await db.execute(''' 
+    CREATE TABLE IF NOT EXISTS ${MyTable.command}
+    (
+      ${MyTable.commandCodeField} TEXT PRIMARY KEY,
+      ${MyTable.itemCodeField} TEXT,
+      ${MyTable.itemQuantityField} REAL,
+      ${MyTable.supplierCodeField} TEXT,
+      ${MyTable.commandDateField} TEXT,
+
+      FOREIGN KEY (${MyTable.itemCodeField}) REFERENCES ${MyTable.item} (${MyTable.itemCodeField}) ON UPDATE CASCADE,
+      FOREIGN KEY (${MyTable.supplierCodeField}) REFERENCES ${MyTable.supplier} (${MyTable.supplierCodeField}) ON UPDATE CASCADE
+    )
+
+    ''');
+
     await db.insert(
         MyTable.customer,
         MyCustomer.copy(const MyCustomer(customerCode: MyTable.customerZero))

@@ -69,6 +69,7 @@ class Item extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<MyItem> items = context.watch<DataCenter>().itemList;
+
     return MyScaffold(
       addData: () => Navigator.push(
         context,
@@ -105,7 +106,15 @@ class Item extends StatelessWidget {
                     ),
                     leading: MyIcon(text: items[index].itemCode![0]),
                     title: Text(items[index].itemCode!),
-                    subtitle: Text('${items[index].itemQuantity}'),
+                    subtitle: items[index].itemQuantity! <= 100
+                        ? Text(
+                            '${items[index].itemQuantity}',
+                            style: const TextStyle(color: Colors.red),
+                          )
+                        : Text(
+                            '${items[index].itemQuantity}',
+                            style: const TextStyle(color: Colors.green),
+                          ),
                   ),
                 ),
         ),
@@ -129,15 +138,13 @@ class AddItem extends StatelessWidget {
             if (_formKey.currentState!.validate()) {
               _formKey.currentState!.save();
               context.read<DataCenter>().insertItem(
-                    MyItem.copy(
-                      MyItem(
-                        itemCode: _itemCode,
-                        itemDescription: _itemDescription,
-                        itemQuantity: double.tryParse(_itemQuantity),
-                        itemUnit: _itemUnit,
-                        itemCategory: _itemCategory,
-                        itemQuality: _itemQuality,
-                      ),
+                    MyItem(
+                      itemCode: _itemCode,
+                      itemDescription: _itemDescription,
+                      itemQuantity: double.tryParse(_itemQuantity),
+                      itemUnit: _itemUnit,
+                      itemCategory: _itemCategory,
+                      itemQuality: _itemQuality,
                     ),
                   );
 
@@ -317,6 +324,118 @@ class AddItem extends StatelessWidget {
   }
 }
 
+class UpdateItem extends StatelessWidget {
+  final int index;
+  const UpdateItem({Key? key, required this.index}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+    MyItem item = context.read<DataCenter>().itemList[index];
+    String _newItemQuantity = '0.0';
+    double finalItemQuantity = 0.0;
+    return MyScaffold(
+      actions: [
+        IconButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
+              finalItemQuantity =
+                  item.itemQuantity! + double.tryParse(_newItemQuantity)!;
+
+              MyItem thisitem = MyItem(
+                itemCode: item.itemCode,
+                itemDescription: item.itemDescription,
+                itemQuantity: finalItemQuantity,
+                itemUnit: item.itemUnit,
+                itemCategory: item.itemCategory,
+                itemQuality: item.itemQuality,
+              );
+
+              context
+                  .read<DataCenter>()
+                  .updateItem(thisitem, itemCode: item.itemCode!);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(MyTable.getStringByLocale(
+                      'Item updated', context.read<DataCenter>().locale)),
+                ),
+              );
+            }
+          },
+          icon: const Icon(
+            Icons.check,
+            color: Colors.white,
+          ),
+        ),
+      ],
+      showFloatingButton: false,
+      showActionsButton: true,
+      appBarTitle: Text(
+        item.itemCode!,
+      ),
+      child: Center(
+        child: SingleChildScrollView(
+          reverse: true,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+          ),
+          child: Form(
+            key: _formKey,
+            child: Column(children: [
+              TextFormField(
+                initialValue: '${item.itemQuantity}',
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: MyTable.getStringByLocale(
+                      'Current quantity', context.read<DataCenter>().locale),
+                ),
+              ),
+              TextFormField(
+                keyboardType: TextInputType.number,
+                onSaved: (newValue) => _newItemQuantity = newValue!,
+                validator: (value) {
+                  if (value != null) {
+                    if (value.isEmpty) {
+                      return MyTable.getStringByLocale('Field is required',
+                          context.read<DataCenter>().locale);
+                    }
+
+                    double? val = double.tryParse(value);
+                    if (val != null) {
+                      if (val < 0.0) {
+                        return MyTable.getStringByLocale(
+                            'Value cannot be negative',
+                            context.read<DataCenter>().locale);
+                      }
+                    }
+                  }
+
+                  return null;
+                },
+                decoration: InputDecoration(
+                  labelText: MyTable.getStringByLocale(
+                      'New quantity', context.read<DataCenter>().locale),
+                ),
+              ),
+              TextFormField(
+                //initialValue:
+                //'${item.itemQuantity! + double.tryParse(_newItemQuantity)!}',
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: MyTable.getStringByLocale(
+                      'Final quantity', context.read<DataCenter>().locale),
+                ),
+              ),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class EditItem extends StatelessWidget {
   final int index;
   const EditItem({Key? key, required this.index}) : super(key: key);
@@ -334,17 +453,15 @@ class EditItem extends StatelessWidget {
             if (_formKey.currentState!.validate()) {
               _formKey.currentState!.save();
               context.read<DataCenter>().updateItem(
-                    index,
-                    MyItem.copy(
-                      MyItem(
-                        itemCode: _itemCode,
-                        itemDescription: _itemDescription,
-                        itemQuantity: double.tryParse(_itemQuantity),
-                        itemUnit: _itemUnit,
-                        itemCategory: _itemCategory,
-                        itemQuality: _itemQuality,
-                      ),
+                    MyItem(
+                      itemCode: _itemCode,
+                      itemDescription: _itemDescription,
+                      itemQuantity: double.tryParse(_itemQuantity),
+                      itemUnit: _itemUnit,
+                      itemCategory: _itemCategory,
+                      itemQuality: _itemQuality,
                     ),
+                    index: index,
                   );
 
               ScaffoldMessenger.of(context).showSnackBar(
@@ -418,6 +535,7 @@ class EditItem extends StatelessWidget {
                   ),
                 ),
                 if (context.read<DataCenter>().addItemDescriptionField)
+                  //if ('${item.itemDescription}'.isNotEmpty)
                   TextFormField(
                     initialValue: item.itemDescription,
                     keyboardType: TextInputType.visiblePassword,
@@ -432,33 +550,14 @@ class EditItem extends StatelessWidget {
                   ),
                 TextFormField(
                   initialValue: '${item.itemQuantity}',
-                  keyboardType: TextInputType.number,
-                  onSaved: (newValue) => _itemQuantity = newValue!,
-                  validator: (value) {
-                    if (value != null) {
-                      if (value.isEmpty) {
-                        return MyTable.getStringByLocale('Field is required',
-                            context.read<DataCenter>().locale);
-                      }
-
-                      double? val = double.tryParse(value);
-                      if (val != null) {
-                        if (val < 0.0) {
-                          return MyTable.getStringByLocale(
-                              'Value cannot be negative',
-                              context.read<DataCenter>().locale);
-                        }
-                      }
-                    }
-
-                    return null;
-                  },
+                  readOnly: true,
                   decoration: InputDecoration(
                     labelText: MyTable.getStringByLocale(
                         'Quantity', context.read<DataCenter>().locale),
                   ),
                 ),
                 if (context.read<DataCenter>().addItemUnitField)
+                  //if ('${item.itemUnit}'.isNotEmpty)
                   TextFormField(
                     initialValue: item.itemUnit,
                     keyboardType: TextInputType.visiblePassword,
@@ -472,6 +571,7 @@ class EditItem extends StatelessWidget {
                     ),
                   ),
                 if (context.read<DataCenter>().addItemCategoryField)
+                  //if ('${item.itemCategory}'.isNotEmpty)
                   TextFormField(
                     initialValue: item.itemCategory,
                     keyboardType: TextInputType.visiblePassword,
@@ -485,6 +585,7 @@ class EditItem extends StatelessWidget {
                     ),
                   ),
                 if (context.read<DataCenter>().addItemQualityField)
+                  //if ('${item.itemQuality}'.isNotEmpty)
                   TextFormField(
                     initialValue: item.itemQuality,
                     keyboardType: TextInputType.visiblePassword,
@@ -497,6 +598,39 @@ class EditItem extends StatelessWidget {
                           'Quality', context.read<DataCenter>().locale),
                     ),
                   ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(MyTable.getStringByLocale('Add description field',
+                      context.read<DataCenter>().locale)),
+                  value: context.watch<DataCenter>().addItemDescriptionField,
+                  onChanged: (bool value) => context
+                      .read<DataCenter>()
+                      .addItemDescriptionField = value,
+                ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(MyTable.getStringByLocale(
+                      'Add quality field', context.read<DataCenter>().locale)),
+                  value: context.read<DataCenter>().addItemQualityField,
+                  onChanged: (bool value) =>
+                      context.read<DataCenter>().addItemQualityField = value,
+                ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(MyTable.getStringByLocale(
+                      'Add unit field', context.read<DataCenter>().locale)),
+                  value: context.read<DataCenter>().addItemUnitField,
+                  onChanged: (bool value) =>
+                      context.read<DataCenter>().addItemUnitField = value,
+                ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(MyTable.getStringByLocale(
+                      'Add category field', context.read<DataCenter>().locale)),
+                  value: context.read<DataCenter>().addItemCategoryField,
+                  onChanged: (bool value) =>
+                      context.read<DataCenter>().addItemCategoryField = value,
+                ),
               ],
             ),
           ),

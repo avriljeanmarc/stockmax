@@ -190,6 +190,7 @@ class MyTable {
 
   static const atDateField = 'atDate';
   static const commandCodeField = 'command_code';
+  static const commandDateField = 'command_date';
 
   static const settingsAccessCodeField = 'settings_access_code';
   static const IconData itemIcon = Icons.sell;
@@ -197,6 +198,7 @@ class MyTable {
   static const IconData saleIcon = Icons.shopping_cart;
   static const IconData supplierIcon = Icons.local_shipping;
   static const IconData customizeDataIcon = Icons.engineering;
+  static const IconData commandIcon = Icons.engineering;
 
   static String formatDateToLocale(String locale, String date) {
     String _dateWithLocale = date;
@@ -635,6 +637,55 @@ class MyTable {
     if (str == 'Insufficient stock') {
       if (locale == 'FR') {
         _translatedString = 'Stock insuffisant';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'Update stock') {
+      if (locale == 'FR') {
+        _translatedString = 'Actualiser stock';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'Current quantity') {
+      if (locale == 'FR') {
+        _translatedString = 'Quantit\u00E9 actuelle';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'New quantity') {
+      if (locale == 'FR') {
+        _translatedString = 'Nouvelle quantit\u00E9';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'Final quantity') {
+      if (locale == 'FR') {
+        _translatedString = 'Quantit\u00E9 finale';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'Item updated') {
+      if (locale == 'FR') {
+        _translatedString = 'Article actualis\u00E9';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'Commands') {
+      if (locale == 'FR') {
+        _translatedString = 'Commandes';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'List of commands') {
+      if (locale == 'FR') {
+        _translatedString = 'Liste des commandes';
         return _translatedString;
       }
     }

@@ -110,11 +110,21 @@ class AddSale extends StatelessWidget {
                         saleCode: _saleCode,
                         itemCode: _itemCode,
                         customerCode: _customerCode,
-                        itemQuantity: double.parse(_itemQuantity!),
+                        itemQuantity: double.tryParse(_itemQuantity!),
                         saleDate: _saleDate,
                       ),
                     ),
                   );
+
+              MyItem? item =
+                  context.read<DataCenter>().getItemByCode(_itemCode!);
+              item = MyItem.copy(MyItem(
+                itemCode: _itemCode,
+                itemQuantity:
+                    item!.itemQuantity! - (double.tryParse(_itemQuantity!)!),
+              ));
+
+              context.read<DataCenter>().updateItem(item, itemCode: _itemCode!);
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

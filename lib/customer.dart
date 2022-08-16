@@ -271,14 +271,14 @@ class MyCustomerDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, Object?> item = {};
+    Map<String, Object?> customer = {};
     if (index >= context.read<DataCenter>().customerList.length) {
-      item = context.read<DataCenter>().customerList[index - 1].toJson();
+      customer = context.read<DataCenter>().customerList[index - 1].toJson();
     } else {
-      item = context.read<DataCenter>().customerList[index].toJson();
+      customer = context.read<DataCenter>().customerList[index].toJson();
     }
 
-    String customerCode = item[MyTable.customerCodeField] as String;
+    String customerCode = customer[MyTable.customerCodeField] as String;
 
     return MyScaffold(
       showActionsButton: true,
@@ -373,29 +373,29 @@ class MyCustomerDetails extends StatelessWidget {
             children: [
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Code', context.read<DataCenter>().locale)}: ${item[MyTable.customerCodeField]}',
+                  '${MyTable.getStringByLocale('Code', context.read<DataCenter>().locale)}: ${customer[MyTable.customerCodeField]}',
                 ),
               ),
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('First name', context.read<DataCenter>().locale)}: ${item[MyTable.customerFirstNameField]}',
+                  '${MyTable.getStringByLocale('First name', context.read<DataCenter>().locale)}: ${customer[MyTable.customerFirstNameField]}',
                 ),
               ),
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Last name', context.read<DataCenter>().locale)}: ${item[MyTable.customerLastNameField]}',
+                  '${MyTable.getStringByLocale('Last name', context.read<DataCenter>().locale)}: ${customer[MyTable.customerLastNameField]}',
                 ),
               ),
-              if ('${item[MyTable.customerAddressField]}'.isNotEmpty)
+              if ('${customer[MyTable.customerAddressField]}'.isNotEmpty)
                 ListTile(
                   title: Text(
-                    '${MyTable.getStringByLocale('Address', context.read<DataCenter>().locale)}: ${item[MyTable.customerAddressField]}',
+                    '${MyTable.getStringByLocale('Address', context.read<DataCenter>().locale)}: ${customer[MyTable.customerAddressField]}',
                   ),
                 ),
-              if ('${item[MyTable.customerEmailField]}'.isNotEmpty)
+              if ('${customer[MyTable.customerEmailField]}'.isNotEmpty)
                 ListTile(
                   title: Text(
-                    '${MyTable.getStringByLocale('E-mail', context.read<DataCenter>().locale)}: ${item[MyTable.customerEmailField]}',
+                    '${MyTable.getStringByLocale('E-mail', context.read<DataCenter>().locale)}: ${customer[MyTable.customerEmailField]}',
                   ),
                 ),
             ],
@@ -534,7 +534,7 @@ class EditCustomer extends StatelessWidget {
                         'Last name', context.read<DataCenter>().locale),
                   ),
                 ),
-                if (context.read<DataCenter>().addCustomerAddressField)
+                if ('${customer.customerAddress}'.isNotEmpty)
                   TextFormField(
                     initialValue: customer.customerAddress,
                     keyboardType: TextInputType.visiblePassword,
@@ -547,7 +547,7 @@ class EditCustomer extends StatelessWidget {
                           'Address', context.read<DataCenter>().locale),
                     ),
                   ),
-                if (context.read<DataCenter>().addCustomerEmailField)
+                if ('${customer.customerEmail}'.isNotEmpty)
                   TextFormField(
                     initialValue: customer.customerEmail,
                     keyboardType: TextInputType.emailAddress,

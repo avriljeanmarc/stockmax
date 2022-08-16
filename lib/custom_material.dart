@@ -6,6 +6,7 @@ import 'item.dart';
 import 'customer.dart';
 import 'mytable.dart';
 import 'supplier.dart';
+import 'command.dart';
 import 'package:badges/badges.dart';
 
 class MyIcon extends StatelessWidget {
@@ -196,46 +197,6 @@ class Settings extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              ListTile(
-                title: Text(MyTable.getStringByLocale(
-                    'Customize items data', context.read<DataCenter>().locale)),
-                trailing: const Icon(
-                  MyTable.customizeDataIcon,
-                ),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ItemSettings(),
-                  ),
-                ),
-              ),
-              ListTile(
-                title: Text(MyTable.getStringByLocale(
-                    'Customize customers data',
-                    context.read<DataCenter>().locale)),
-                trailing: const Icon(
-                  MyTable.customizeDataIcon,
-                ),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CustomerSettings(),
-                  ),
-                ),
-              ),
-              ListTile(
-                title: Text(MyTable.getStringByLocale(
-                    'Customize sales data', context.read<DataCenter>().locale)),
-                trailing: const Icon(
-                  MyTable.customizeDataIcon,
-                ),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SaleSettings(),
-                  ),
-                ),
-              ),
               ListTile(
                 onTap: () => context.read<DataCenter>().deleteDatabase(),
                 tileColor: Colors.red,
@@ -462,6 +423,23 @@ class HomeWidget extends StatelessWidget {
             subtitle: '${context.read<DataCenter>().supplierList.length}',
             icon: const Icon(
               MyTable.supplierIcon,
+              size: 50,
+              color: Colors.white,
+            ),
+          ),
+          MenuWidget(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Command(),
+              ),
+            ),
+            color: Colors.white,
+            title: MyTable.getStringByLocale(
+                'Commands', context.read<DataCenter>().locale),
+            subtitle: '${context.read<DataCenter>().commandList.length}',
+            icon: const Icon(
+              MyTable.commandIcon,
               size: 50,
               color: Colors.white,
             ),
