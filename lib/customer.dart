@@ -4,51 +4,6 @@ import 'package:provider/provider.dart';
 import 'custom_material.dart';
 import 'mytable.dart';
 
-class CustomerSettings extends StatelessWidget {
-  const CustomerSettings({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MyScaffold(
-      showFloatingButton: false,
-      showActionsButton: true,
-      actions: [
-        IconButton(
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const HomeWidget(),
-            ),
-          ),
-          icon: const Icon(
-            Icons.home,
-          ),
-        ),
-      ],
-      appBarTitle: Text(MyTable.getStringByLocale(
-          'Customers data', context.read<DataCenter>().locale)),
-      child: Column(
-        children: const [
-          /*SwitchListTile(
-            title: Text(MyTable.getStringByLocale(
-                'Add e-mail field', context.read<DataCenter>().locale)),
-            value: context.watch<DataCenter>().addCustomerEmailField,
-            onChanged: (bool value) =>
-                context.read<DataCenter>().addCustomerEmailField = value,
-          ),
-          SwitchListTile(
-            title: Text(MyTable.getStringByLocale(
-                'Add address field', context.read<DataCenter>().locale)),
-            value: context.read<DataCenter>().addCustomerAddressField,
-            onChanged: (bool value) =>
-                context.read<DataCenter>().addCustomerAddressField = value,
-          ),*/
-        ],
-      ),
-    );
-  }
-}
-
 class Customer extends StatelessWidget {
   const Customer({Key? key}) : super(key: key);
 
@@ -534,7 +489,8 @@ class EditCustomer extends StatelessWidget {
                         'Last name', context.read<DataCenter>().locale),
                   ),
                 ),
-                if ('${customer.customerAddress}'.isNotEmpty)
+                if (context.read<DataCenter>().addCustomerAddressField)
+                  //if ('${customer.customerAddress}'.isNotEmpty)
                   TextFormField(
                     initialValue: customer.customerAddress,
                     keyboardType: TextInputType.visiblePassword,
@@ -547,7 +503,8 @@ class EditCustomer extends StatelessWidget {
                           'Address', context.read<DataCenter>().locale),
                     ),
                   ),
-                if ('${customer.customerEmail}'.isNotEmpty)
+                if (context.read<DataCenter>().addCustomerEmailField)
+                  //if ('${customer.customerEmail}'.isNotEmpty)
                   TextFormField(
                     initialValue: customer.customerEmail,
                     keyboardType: TextInputType.emailAddress,
@@ -560,6 +517,23 @@ class EditCustomer extends StatelessWidget {
                           'E-mail', context.read<DataCenter>().locale),
                     ),
                   ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(MyTable.getStringByLocale(
+                      'Add e-mail field', context.read<DataCenter>().locale)),
+                  value: context.watch<DataCenter>().addCustomerEmailField,
+                  onChanged: (bool value) =>
+                      context.read<DataCenter>().addCustomerEmailField = value,
+                ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(MyTable.getStringByLocale(
+                      'Add address field', context.read<DataCenter>().locale)),
+                  value: context.read<DataCenter>().addCustomerAddressField,
+                  onChanged: (bool value) => context
+                      .read<DataCenter>()
+                      .addCustomerAddressField = value,
+                ),
               ],
             ),
           ),

@@ -68,9 +68,10 @@ class AddCommand extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    String _itemQuantity = '0.0';
+
     String? _commandCode,
         _itemCode,
+        _itemQuantity,
         _supplierCode = MyTable.supplierZero,
         _commandDate;
     double _finalQuantity = 0.0;
@@ -118,7 +119,7 @@ class AddCommand extends StatelessWidget {
                     MyCommand(
                       commandCode: _commandCode,
                       itemCode: _itemCode,
-                      itemQuantity: double.tryParse(_itemQuantity),
+                      itemQuantity: double.tryParse(_itemQuantity!),
                       supplierCode: _supplierCode,
                       commandDate: _commandDate,
                     ),
@@ -127,7 +128,7 @@ class AddCommand extends StatelessWidget {
               MyItem? item =
                   context.read<DataCenter>().getItemByCode(_itemCode!);
               _finalQuantity =
-                  item!.itemQuantity! + (double.tryParse(_itemQuantity)!);
+                  item!.itemQuantity! + (double.tryParse(_itemQuantity!)!);
               item = MyItem.copy(MyItem(
                 itemCode: _itemCode,
                 itemQuantity: _finalQuantity,
@@ -358,6 +359,7 @@ class MyCommandDetails extends StatelessWidget {
     String commandCode = commands[MyTable.commandCodeField] as String;
     return MyScaffold(
         showActionsButton: true,
+        showFloatingButton: false,
         actions: [
           IconButton(
             onPressed: () => Navigator.push(
@@ -372,7 +374,7 @@ class MyCommandDetails extends StatelessWidget {
           ),
           PopupMenuButton(
             itemBuilder: (context) => [
-              PopupMenuItem(
+              /*PopupMenuItem(
                 child: Text(
                   MyTable.getStringByLocale(
                       'Edit', context.read<DataCenter>().locale),
@@ -391,7 +393,7 @@ class MyCommandDetails extends StatelessWidget {
 
                   return;
                 },
-              ),
+              ),*/
               PopupMenuItem(
                 onTap: () {
                   Future.delayed(
@@ -424,6 +426,23 @@ class MyCommandDetails extends StatelessWidget {
                                             MyTable.commandCodeField,
                                             commandCode,
                                           );
+                                      String itemCode =
+                                          commands[MyTable.itemCodeField]
+                                              as String;
+                                      MyItem? item = context
+                                          .read<DataCenter>()
+                                          .getItemByCode(itemCode);
+
+                                      item = MyItem.copy(MyItem(
+                                        itemCode: itemCode,
+                                        itemQuantity: item!.itemQuantity! -
+                                            (commands[MyTable
+                                                .itemQuantityField]! as double),
+                                      ));
+
+                                      context
+                                          .read<DataCenter>()
+                                          .updateItem(item, itemCode: itemCode);
                                       Navigator.of(context).pop();
                                     },
                                   ),
@@ -486,16 +505,5 @@ class MyCommandDetails extends StatelessWidget {
             ]),
           ),
         ));
-  }
-}
-
-class EditCommand extends StatelessWidget {
-  final int index;
-  const EditCommand({Key? key, required this.index}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
   }
 }

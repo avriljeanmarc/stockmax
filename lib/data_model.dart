@@ -485,27 +485,36 @@ class DataCenter extends ChangeNotifier {
     }
 
     if (tableName == MyTable.customer) {
-      for (MyCustomer item in _customerList) {
-        if (item.customerCode == rowId) {
-          _customerList.remove(item);
+      for (MyCustomer customer in _customerList) {
+        if (customer.customerCode == rowId) {
+          _customerList.remove(customer);
           break;
         }
       }
     }
 
     if (tableName == MyTable.sale) {
-      for (MySale item in _saleList) {
-        if (item.saleCode == rowId) {
-          _saleList.remove(item);
+      for (MySale sale in _saleList) {
+        if (sale.saleCode == rowId) {
+          _saleList.remove(sale);
           break;
         }
       }
     }
 
     if (tableName == MyTable.supplier) {
-      for (MySupplier item in _supplierList) {
-        if (item.supplierCode == rowId) {
-          _supplierList.remove(item);
+      for (MySupplier supplier in _supplierList) {
+        if (supplier.supplierCode == rowId) {
+          _supplierList.remove(supplier);
+          break;
+        }
+      }
+    }
+
+    if (tableName == MyTable.command) {
+      for (MyCommand command in _commandList) {
+        if (command.commandCode == rowId) {
+          _commandList.remove(command);
           break;
         }
       }

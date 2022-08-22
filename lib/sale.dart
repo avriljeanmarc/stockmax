@@ -331,14 +331,14 @@ class MySaleDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, Object?> item = {};
+    Map<String, Object?> sales = {};
     if (index >= context.read<DataCenter>().saleList.length) {
-      item = context.read<DataCenter>().saleList[index - 1].toJson();
+      sales = context.read<DataCenter>().saleList[index - 1].toJson();
     } else {
-      item = context.read<DataCenter>().saleList[index].toJson();
+      sales = context.read<DataCenter>().saleList[index].toJson();
     }
 
-    String saleCode = '${item[MyTable.saleCodeField]}';
+    String saleCode = '${sales[MyTable.saleCodeField]}';
 
     return MyScaffold(
       showActionsButton: true,
@@ -356,24 +356,6 @@ class MySaleDetails extends StatelessWidget {
         ),
         PopupMenuButton(
           itemBuilder: (context) => [
-            PopupMenuItem(
-              child: Text(
-                MyTable.getStringByLocale(
-                    'Edit', context.read<DataCenter>().locale),
-              ),
-              onTap: () {
-                /*  Future.delayed(
-                      const Duration(seconds: 0),
-                      () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditItem(
-                                index: index,
-                              ),
-                            ),
-                          ));*/
-              },
-            ),
             PopupMenuItem(
               onTap: () {
                 Future.delayed(
@@ -395,6 +377,23 @@ class MySaleDetails extends StatelessWidget {
                                           MyTable.saleCodeField,
                                           saleCode,
                                         );
+
+                                    String itemCode =
+                                        sales[MyTable.itemCodeField] as String;
+                                    MyItem? item = context
+                                        .read<DataCenter>()
+                                        .getItemByCode(itemCode);
+
+                                    item = MyItem.copy(MyItem(
+                                      itemCode: itemCode,
+                                      itemQuantity: item!.itemQuantity! +
+                                          (sales[MyTable.itemQuantityField]!
+                                              as double),
+                                    ));
+
+                                    context
+                                        .read<DataCenter>()
+                                        .updateItem(item, itemCode: itemCode);
                                     Navigator.of(context).pop();
                                   },
                                 ),
@@ -432,73 +431,35 @@ class MySaleDetails extends StatelessWidget {
             children: [
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Code', context.read<DataCenter>().locale)}: ${item[MyTable.saleCodeField]}',
+                  '${MyTable.getStringByLocale('Code', context.read<DataCenter>().locale)}: ${sales[MyTable.saleCodeField]}',
                 ),
               ),
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Item code', context.read<DataCenter>().locale)}: ${item[MyTable.itemCodeField]}',
+                  '${MyTable.getStringByLocale('Item code', context.read<DataCenter>().locale)}: ${sales[MyTable.itemCodeField]}',
                 ),
               ),
-              if ({item[MyTable.customerCodeField]}.isNotEmpty &&
-                  item[MyTable.customerCodeField] as String !=
+              if ({sales[MyTable.customerCodeField]}.isNotEmpty &&
+                  sales[MyTable.customerCodeField] as String !=
                       MyTable.customerZero)
                 ListTile(
                   title: Text(
-                    '${MyTable.getStringByLocale('Customer code', context.read<DataCenter>().locale)}: ${item[MyTable.customerCodeField]}',
+                    '${MyTable.getStringByLocale('Customer code', context.read<DataCenter>().locale)}: ${sales[MyTable.customerCodeField]}',
                   ),
                 ),
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Quantity', context.read<DataCenter>().locale)}: ${item[MyTable.itemQuantityField]}',
+                  '${MyTable.getStringByLocale('Quantity', context.read<DataCenter>().locale)}: ${sales[MyTable.itemQuantityField]}',
                 ),
               ),
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Date', context.read<DataCenter>().locale)}: ${MyTable.formatDateToLocale(context.read<DataCenter>().locale, item[MyTable.saleDateField] as String)}',
+                  '${MyTable.getStringByLocale('Date', context.read<DataCenter>().locale)}: ${MyTable.formatDateToLocale(context.read<DataCenter>().locale, sales[MyTable.saleDateField] as String)}',
                 ),
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class SaleSettings extends StatelessWidget {
-  const SaleSettings({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MyScaffold(
-      showFloatingButton: false,
-      showActionsButton: true,
-      actions: [
-        IconButton(
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const HomeWidget(),
-            ),
-          ),
-          icon: const Icon(
-            Icons.home,
-          ),
-        ),
-      ],
-      appBarTitle: Text(MyTable.getStringByLocale(
-          'Sales data', context.read<DataCenter>().locale)),
-      child: Column(
-        children: const [
-          /*SwitchListTile(
-            title: Text(MyTable.getStringByLocale(
-                'Add customer field', context.read<DataCenter>().locale)),
-            value: context.watch<DataCenter>().addSaleCustomerCodeField,
-            onChanged: (bool value) =>
-                context.read<DataCenter>().addSaleCustomerCodeField = value,
-          ),*/
-        ],
       ),
     );
   }
