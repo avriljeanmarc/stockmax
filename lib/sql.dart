@@ -127,6 +127,12 @@ class StockmaxDatabase {
         MyTable.customer,
         MyCustomer.copy(const MyCustomer(customerCode: MyTable.customerZero))
             .toJson());
+
+    await db.insert(
+        MyTable.supplier,
+        MySupplier.copy(const MySupplier(
+                supplierCode: MyTable.supplierZero, supplierName: 'STOCKMAX'))
+            .toJson());
   }
 
   Future<void> insertItem(MyItem item) async {
@@ -157,6 +163,11 @@ class StockmaxDatabase {
   Future<void> insertSupplier(MySupplier supplier) async {
     final db = await instance.database;
     await db.insert(MyTable.supplier, supplier.toJson());
+  }
+
+  Future<void> insertCommand(MyCommand command) async {
+    final db = await instance.database;
+    await db.insert(MyTable.command, command.toJson());
   }
 
   Future<Map<String, Object?>> readRow({
@@ -209,6 +220,12 @@ class StockmaxDatabase {
     final db = await instance.database;
     final result = await db.query(MyTable.supplier);
     return result.map((json) => MySupplier.fromJson(json)).toList();
+  }
+
+  Future<List<MyCommand>> readAllCommands() async {
+    final db = await instance.database;
+    final result = await db.query(MyTable.command);
+    return result.map((json) => MyCommand.fromJson(json)).toList();
   }
 
   Future<void> updateItem(MyItem item, MyItem oldItem) async {

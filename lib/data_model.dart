@@ -266,6 +266,7 @@ class DataCenter extends ChangeNotifier {
   List<MySale> _saleList = [];
   List<MyItemPriceAtDate> _itemPriceAtDateList = [];
   List<MyCommand> _commandList = [];
+  int lessStockValue = 100;
   //For settings purpose
 
   bool _addItemDescriptionField = false;
@@ -278,6 +279,8 @@ class DataCenter extends ChangeNotifier {
 
   bool _addSaleCustomerCodeField = false;
 
+  bool _addCommandSupplierCodeField = false;
+
   final StockmaxDatabase _database = StockmaxDatabase.instance;
 
   DataCenter() {
@@ -286,13 +289,13 @@ class DataCenter extends ChangeNotifier {
 
   Future<void> _loadUserSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    /* _addItemDescriptionField =
-        prefs.getBool('addItemDescriptionField') ?? false;
-    _addItemQualityField = prefs.getBool('addItemQualityField') ?? false;
-    _addItemUnitField = prefs.getBool('addItemUnitField') ?? false;
-    _addItemCategoryField = prefs.getBool('addItemCategoryField') ?? false;*/
-
     _locale = prefs.getString('locale') ?? 'FR';
+  }
+
+  bool get addCommandSupplierCodeField => _addCommandSupplierCodeField;
+  set addCommandSupplierCodeField(bool value) {
+    _addCommandSupplierCodeField = value;
+    notifyListeners();
   }
 
   bool get addCustomerAddressField => _addCustomerAddressField;
@@ -347,16 +350,7 @@ class DataCenter extends ChangeNotifier {
     _addCustomerEmailField = false;
 
     _addSaleCustomerCodeField = false;
-  }
-
-  double getItemQuantityInStock(String itemCode) {
-    double quantity = 0.0;
-    for (MyItem element in _itemList) {
-      if (element.itemCode == itemCode) {
-        quantity = element.itemQuantity!;
-      }
-    }
-    return quantity;
+    _addCommandSupplierCodeField = false;
   }
 
   MyItem? getItemByCode(String itemCode) {
@@ -367,24 +361,6 @@ class DataCenter extends ChangeNotifier {
       }
     }
     return item;
-  }
-
-  List<String> getItemCodeList() {
-    List<String> itemCodeList = [];
-    for (int i = 0; i < _itemList.length; i++) {
-      itemCodeList.add(_itemList[i].itemCode!);
-    }
-
-    return itemCodeList;
-  }
-
-  List<String> getCustomerCodeList() {
-    List<String> customerCodeList = [];
-    for (int i = 0; i < _customerList.length; i++) {
-      customerCodeList.add(_customerList[i].customerCode!);
-    }
-
-    return customerCodeList;
   }
 
   String get locale => _locale;
@@ -405,11 +381,19 @@ class DataCenter extends ChangeNotifier {
     for (int i = 0; i < _customerList.length; i++) {
       if (_customerList[i].customerCode == MyTable.customerZero) {
         _customerList.remove(_customerList[i]);
+        break;
       }
     }
     _saleList = await _database.readAllSales();
     _itemPriceAtDateList = await _database.readAllItemPriceAtDates();
     _supplierList = await _database.readAllSuppliers();
+    for (int i = 0; i < _supplierList.length; i++) {
+      if (_supplierList[i].supplierCode == MyTable.supplierZero) {
+        _supplierList.remove(_supplierList[i]);
+        break;
+      }
+    }
+    _commandList = await _database.readAllCommands();
     await _loadUserSettings();
     //await _database.listTables();
     notifyListeners();
@@ -452,6 +436,12 @@ class DataCenter extends ChangeNotifier {
   void insertSupplier(MySupplier supplier) async {
     await _database.insertSupplier(supplier);
     _supplierList.add(supplier);
+    notifyListeners();
+  }
+
+  void insertCommand(MyCommand command) async {
+    await _database.insertCommand(command);
+    _commandList.add(command);
     notifyListeners();
   }
 

@@ -5,6 +5,7 @@ import 'data_model.dart';
 class GenerateData {
   final List<Map<String, Object?>> itemData = [];
   final List<Map<String, Object?>> customerData = [];
+  final List<Map<String, Object?>> supplierData = [];
   //final List<Map<String, Object?>> saleData = [];
 
   GenerateData() {
@@ -136,6 +137,13 @@ class GenerateData {
       MyTable.itemQuantityField: 5.0,
       MyTable.saleDateField: '4/18/2022',
     });*/
+
+    supplierData.add({
+      MyTable.supplierCodeField: 'SP-001',
+      MyTable.supplierNameField: 'E-POWER',
+      MyTable.supplierAddressField: 'FREE LAND TRADE PARK RUE LISIUS',
+      MyTable.supplierEmailField: 'epowerhaiti.com',
+    });
   }
 
   Future<void> generate(StockmaxDatabase db) async {
@@ -145,6 +153,10 @@ class GenerateData {
 
     for (Map<String, Object?> item in customerData) {
       await db.insertCustomer(MyCustomer.copy(MyCustomer.fromJson(item)));
+    }
+
+    for (Map<String, Object?> item in supplierData) {
+      await db.insertSupplier(MySupplier.copy(MySupplier.fromJson(item)));
     }
 
     /*for (Map<String, Object?> item in saleData) {
@@ -163,6 +175,7 @@ class MyTable {
   static const itemPriceAtDate = 'ItemPriceAtDate';
 
   static const customerZero = 'customer_zero';
+  static const supplierZero = 'supplier_zero';
 
   static const itemCodeField = 'item_code';
   static const itemPriceField = 'item_price';
@@ -198,7 +211,7 @@ class MyTable {
   static const IconData saleIcon = Icons.shopping_cart;
   static const IconData supplierIcon = Icons.local_shipping;
   static const IconData customizeDataIcon = Icons.engineering;
-  static const IconData commandIcon = Icons.engineering;
+  static const IconData commandIcon = Icons.store;
 
   static String formatDateToLocale(String locale, String date) {
     String _dateWithLocale = date;
@@ -686,6 +699,41 @@ class MyTable {
     if (str == 'List of commands') {
       if (locale == 'FR') {
         _translatedString = 'Liste des commandes';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'Command added') {
+      if (locale == 'FR') {
+        _translatedString = 'Commande ajout\u00E9e';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'New command') {
+      if (locale == 'FR') {
+        _translatedString = 'Nouvelle commande';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'Add supplier code field') {
+      if (locale == 'FR') {
+        _translatedString = 'Ajouter le champ code du fournisseur';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'Final quantity') {
+      if (locale == 'FR') {
+        _translatedString = 'Quantit\u00E9 finale';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'Supplier code') {
+      if (locale == 'FR') {
+        _translatedString = 'Code fournisseur';
         return _translatedString;
       }
     }

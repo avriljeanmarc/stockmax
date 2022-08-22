@@ -104,9 +104,10 @@ class Item extends StatelessWidget {
                         ),
                       ),
                     ),
+                    subtitle: Text(items[index].itemDescription!),
                     leading: MyIcon(text: items[index].itemCode![0]),
                     title: Text(items[index].itemCode!),
-                    subtitle: items[index].itemQuantity! <= 100
+                    trailing: items[index].itemQuantity! <= 100
                         ? Text(
                             '${items[index].itemQuantity}',
                             style: const TextStyle(color: Colors.red),
@@ -443,8 +444,13 @@ class EditItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    String _itemQuantity = '0.0';
-    String? _itemCode, _itemDescription, _itemQuality, _itemUnit, _itemCategory;
+
+    String? _itemCode,
+        _itemDescription,
+        _itemQuality,
+        _itemUnit,
+        _itemQuantity,
+        _itemCategory;
     MyItem item = context.read<DataCenter>().itemList[index];
     return MyScaffold(
       actions: [
@@ -456,7 +462,7 @@ class EditItem extends StatelessWidget {
                     MyItem(
                       itemCode: _itemCode,
                       itemDescription: _itemDescription,
-                      itemQuantity: double.tryParse(_itemQuantity),
+                      itemQuantity: double.tryParse(_itemQuantity!),
                       itemUnit: _itemUnit,
                       itemCategory: _itemCategory,
                       itemQuality: _itemQuality,
@@ -551,6 +557,10 @@ class EditItem extends StatelessWidget {
                 TextFormField(
                   initialValue: '${item.itemQuantity}',
                   readOnly: true,
+                  onSaved: (newValue) => _itemQuantity = newValue,
+                  /*validator: (value) {
+                    return null;
+                  },*/
                   decoration: InputDecoration(
                     labelText: MyTable.getStringByLocale(
                         'Quantity', context.read<DataCenter>().locale),

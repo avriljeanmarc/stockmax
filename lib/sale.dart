@@ -49,8 +49,8 @@ class Sale extends StatelessWidget {
                       text: items[index].saleCode![0],
                     ),
                     title: Text(items[index].saleCode!),
-                    subtitle: Text(
-                        '${items[index].itemCode} ${items[index].itemQuantity}'),
+                    subtitle: Text('${items[index].itemCode}'),
+                    trailing: Text('${items[index].itemQuantity}'),
                   ),
                 ),
         ),
@@ -68,9 +68,13 @@ class AddSale extends StatelessWidget {
     String? _saleCode,
         _itemCode,
         _customerCode = MyTable.customerZero,
-        _itemQuantity,
         _saleDate;
-    List<String> itemCodeList = context.read<DataCenter>().getItemCodeList();
+    String _itemQuantity = '0.0';
+    List<MyItem> itemList = context.read<DataCenter>().itemList;
+    List<String> itemCodeList = [];
+    for (int i = 0; i < itemList.length; i++) {
+      itemCodeList.add(itemList[i].itemCode!);
+    }
     String _selectedValue = itemCodeList.isNotEmpty ? itemCodeList[0] : '';
     List<DropdownMenuItem<String>> itemCodeDropDownMenuItem = [];
 
@@ -82,10 +86,13 @@ class AddSale extends StatelessWidget {
     }
 
     double _quantityInStock =
-        context.read<DataCenter>().getItemQuantityInStock(_selectedValue);
+        itemList.isNotEmpty ? itemList[0].itemQuantity! : 0.0;
 
-    List<String> customerCodeList =
-        context.read<DataCenter>().getCustomerCodeList();
+    List<MyCustomer> customerList = context.read<DataCenter>().customerList;
+    List<String> customerCodeList = [];
+    for (int i = 0; i < customerList.length; i++) {
+      customerCodeList.add(customerList[i].customerCode!);
+    }
     String _selectedValue1 =
         customerCodeList.isNotEmpty ? customerCodeList[0] : '';
     List<DropdownMenuItem<String>> customerCodeDropDownMenuItem = [];
@@ -110,7 +117,7 @@ class AddSale extends StatelessWidget {
                         saleCode: _saleCode,
                         itemCode: _itemCode,
                         customerCode: _customerCode,
-                        itemQuantity: double.tryParse(_itemQuantity!),
+                        itemQuantity: double.tryParse(_itemQuantity),
                         saleDate: _saleDate,
                       ),
                     ),
@@ -121,7 +128,7 @@ class AddSale extends StatelessWidget {
               item = MyItem.copy(MyItem(
                 itemCode: _itemCode,
                 itemQuantity:
-                    item!.itemQuantity! - (double.tryParse(_itemQuantity!)!),
+                    item!.itemQuantity! - (double.tryParse(_itemQuantity)!),
               ));
 
               context.read<DataCenter>().updateItem(item, itemCode: _itemCode!);
@@ -201,9 +208,12 @@ class AddSale extends StatelessWidget {
                     onChanged: (selectedValue) {
                       setState(() {
                         _selectedValue = selectedValue as String;
-                        _quantityInStock = context
-                            .read<DataCenter>()
-                            .getItemQuantityInStock(_selectedValue);
+                        for (MyItem element in itemList) {
+                          if (element.itemCode == _selectedValue) {
+                            _quantityInStock = element.itemQuantity!;
+                            break;
+                          }
+                        }
                       });
                     },
                   ),
@@ -228,7 +238,7 @@ class AddSale extends StatelessWidget {
                     ),
                   TextFormField(
                     keyboardType: TextInputType.number,
-                    onSaved: (newValue) => _itemQuantity = newValue,
+                    onSaved: (newValue) => _itemQuantity = newValue!,
                     validator: (value) {
                       if (value != null) {
                         if (value.isEmpty) {
@@ -445,7 +455,7 @@ class MySaleDetails extends StatelessWidget {
               ),
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Date', context.read<DataCenter>().locale)}: ${context.read<DataCenter>().locale == 'US' ? item[MyTable.saleDateField] : MyTable.formatDateToLocale('FR', item[MyTable.saleDateField] as String)}',
+                  '${MyTable.getStringByLocale('Date', context.read<DataCenter>().locale)}: ${MyTable.formatDateToLocale(context.read<DataCenter>().locale, item[MyTable.saleDateField] as String)}',
                 ),
               ),
             ],
