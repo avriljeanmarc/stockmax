@@ -20,8 +20,8 @@ class Sale extends StatelessWidget {
           ),
         );
       },
-      appBarTitle: Text(MyTable.getStringByLocale(
-          'List of sales', context.read<DataCenter>().locale)),
+      appBarTitle: Text(MyTable.getStringByLanguageCode(
+          'List of sales', context.read<DataCenter>().languageCode)),
       child: Center(
         child: Container(
           margin: const EdgeInsets.symmetric(
@@ -70,6 +70,7 @@ class AddSale extends StatelessWidget {
         _customerCode = MyTable.customerZero,
         _saleDate;
     String _itemQuantity = '0.0';
+    String _saleCost = '0.0';
     List<MyItem> itemList = context.read<DataCenter>().itemList;
     List<String> itemCodeList = [];
     for (int i = 0; i < itemList.length; i++) {
@@ -104,9 +105,44 @@ class AddSale extends StatelessWidget {
     }
 
     DateTime? _datetime;
+    bool _value = false;
 
     return MyScaffold(
       actions: [
+        /*StatefulBuilder(
+          builder: (context, setState) {
+            return IconButton(
+              onPressed: () {
+                _formKey.currentState!.save();
+                List<MyItemPriceAtDate> pricesHistory = [];
+                context.read<DataCenter>().itemPriceAtDateList.forEach((price) {
+                  if (price.itemCode == _selectedValue) {
+                    pricesHistory.add(price);
+                  }
+                });
+
+                double _lastPrice = 0.0;
+                DateTime _lastDate = DateTime(1800);
+                for (MyItemPriceAtDate price in pricesHistory) {
+                  if (_lastDate.isBefore(DateTime.parse(price.atDate!))) {
+                    _lastDate = DateTime.parse(price.atDate!);
+                    _lastPrice = price.itemPrice!;
+                  }
+                }
+
+                setState(
+                  () {
+                    _saleCost = (double.tryParse(_itemQuantity)! * _lastPrice)
+                        .toString();
+                  },
+                );
+              },
+              icon: const Icon(
+                Icons.attach_money,
+              ),
+            );
+          },
+        ),*/
         IconButton(
           onPressed: () {
             if (_formKey.currentState!.validate()) {
@@ -118,6 +154,7 @@ class AddSale extends StatelessWidget {
                         itemCode: _itemCode,
                         customerCode: _customerCode,
                         itemQuantity: double.tryParse(_itemQuantity),
+                        saleCost: double.tryParse(_saleCost),
                         saleDate: _saleDate,
                       ),
                     ),
@@ -129,14 +166,18 @@ class AddSale extends StatelessWidget {
                 itemCode: _itemCode,
                 itemQuantity:
                     item!.itemQuantity! - (double.tryParse(_itemQuantity)!),
+                itemDescription: item.itemDescription,
+                itemCategory: item.itemCategory,
+                itemQuality: item.itemQuality,
+                itemUnit: item.itemUnit,
               ));
 
               context.read<DataCenter>().updateItem(item, itemCode: _itemCode!);
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(MyTable.getStringByLocale(
-                      'Sale added', context.read<DataCenter>().locale)),
+                  content: Text(MyTable.getStringByLanguageCode(
+                      'Sale added', context.read<DataCenter>().languageCode)),
                 ),
               );
             }
@@ -149,8 +190,8 @@ class AddSale extends StatelessWidget {
       ],
       showActionsButton: true,
       showFloatingButton: false,
-      appBarTitle: Text(MyTable.getStringByLocale(
-          'New sale', context.read<DataCenter>().locale)),
+      appBarTitle: Text(MyTable.getStringByLanguageCode(
+          'New sale', context.read<DataCenter>().languageCode)),
       child: Center(
         child: SingleChildScrollView(
           reverse: true,
@@ -168,8 +209,9 @@ class AddSale extends StatelessWidget {
                       bool isThere = false;
                       if (value != null) {
                         if (value.isEmpty) {
-                          return MyTable.getStringByLocale('Field is required',
-                              context.read<DataCenter>().locale);
+                          return MyTable.getStringByLanguageCode(
+                              'Field is required',
+                              context.read<DataCenter>().languageCode);
                         }
 
                         context.read<DataCenter>().saleList.forEach((item) {
@@ -182,21 +224,22 @@ class AddSale extends StatelessWidget {
                         });
 
                         if (isThere) {
-                          return MyTable.getStringByLocale('Duplicated value',
-                              context.read<DataCenter>().locale);
+                          return MyTable.getStringByLanguageCode(
+                              'Duplicated value',
+                              context.read<DataCenter>().languageCode);
                         }
                       }
                       return null;
                     },
                     decoration: InputDecoration(
-                      labelText: MyTable.getStringByLocale(
-                          'Code', context.read<DataCenter>().locale),
+                      labelText: MyTable.getStringByLanguageCode(
+                          'Code', context.read<DataCenter>().languageCode),
                     ),
                   ),
                   DropdownButtonFormField(
                     decoration: InputDecoration(
-                      labelText: MyTable.getStringByLocale(
-                          'Item code', context.read<DataCenter>().locale),
+                      labelText: MyTable.getStringByLanguageCode(
+                          'Item code', context.read<DataCenter>().languageCode),
                     ),
                     validator: (value) {
                       return null;
@@ -217,11 +260,192 @@ class AddSale extends StatelessWidget {
                       });
                     },
                   ),
-                  if (context.read<DataCenter>().addSaleCustomerCodeField)
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    onSaved: (newValue) => _itemQuantity = newValue!,
+                    validator: (value) {
+                      if (value != null) {
+                        if (value.isEmpty) {
+                          return MyTable.getStringByLanguageCode(
+                              'Field is required',
+                              context.read<DataCenter>().languageCode);
+                        }
+
+                        double? quantity = double.tryParse(value);
+                        if (quantity! > _quantityInStock) {
+                          return MyTable.getStringByLanguageCode(
+                              'Insufficient stock',
+                              context.read<DataCenter>().languageCode);
+                        }
+                      }
+
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: MyTable.getStringByLanguageCode(
+                          'Quantity', context.read<DataCenter>().languageCode),
+                    ),
+                  ),
+                  TextFormField(
+                    //initialValue: _saleCost,
+                    controller: TextEditingController(text: _saleCost),
+                    keyboardType: TextInputType.number,
+                    onSaved: (newValue) => _saleCost = newValue!,
+                    validator: (value) {
+                      if (value != null) {
+                        if (value.isEmpty) {
+                          return MyTable.getStringByLanguageCode(
+                              'Field is required',
+                              context.read<DataCenter>().languageCode);
+                        }
+                      }
+
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: MyTable.getStringByLanguageCode('Total cost',
+                          context.read<DataCenter>().languageCode),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          List<MyItemPriceAtDate> pricesHistory = [];
+                          context
+                              .read<DataCenter>()
+                              .itemPriceAtDateList
+                              .forEach((price) {
+                            if (price.itemCode == _selectedValue) {
+                              pricesHistory.add(price);
+                            }
+                          });
+
+                          double _lastPrice = 0.0;
+                          DateTime _lastDate = DateTime(1800);
+                          for (MyItemPriceAtDate price in pricesHistory) {
+                            if (_lastDate
+                                .isBefore(DateTime.parse(price.atDate!))) {
+                              _lastDate = DateTime.parse(price.atDate!);
+                              _lastPrice = price.itemPrice!;
+                            }
+                          }
+
+                          setState(
+                            () {
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState!.save();
+                                _saleCost = (double.tryParse(_itemQuantity)! *
+                                        _lastPrice)
+                                    .toString();
+                              }
+                            },
+                          );
+                        },
+                        icon: const Icon(Icons.attach_money),
+                      ),
+                    ),
+                  ),
+                  /*StatefulBuilder(builder: (context, setState) {
+                    return TextFormField(
+                      //initialValue: _saleCost,
+                      keyboardType: TextInputType.number,
+                      onSaved: (newValue) => _saleCost = newValue!,
+                      validator: (value) {
+                        if (value != null) {
+                          if (value.isEmpty) {
+                            return MyTable.getStringByLanguageCode(
+                                'Field is required',
+                                context.read<DataCenter>().languageCode);
+                          }
+                        }
+
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode(
+                            'Total cost', context.read<DataCenter>().languageCode),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(
+                              () {
+                                _saleCost = '1200';
+                              },
+                            );
+                          },
+                          icon: const Icon(Icons.attach_money),
+                        ),
+                      ),
+                    );
+                  }),
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    onSaved: (newValue) => _saleCost = newValue!,
+                    validator: (value) {
+                      if (value != null) {
+                        if (value.isEmpty) {
+                          return MyTable.getStringByLanguageCode('Field is required',
+                              context.read<DataCenter>().languageCode);
+                        }
+                      }
+
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: MyTable.getStringByLanguageCode(
+                          'Total cost', context.read<DataCenter>().languageCode),
+                      suffixIcon: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.attach_money),
+                      ),
+                    ),
+                  ),*/
+                  TextFormField(
+                    controller: TextEditingController(
+                        text: _datetime == null
+                            ? ''
+                            : DateFormat(
+                                    context.read<DataCenter>().languageCode ==
+                                            'en'
+                                        ? MyTable.enDateFormat
+                                        : MyTable.frDateFormat)
+                                .format(_datetime!)),
+                    readOnly: true,
+                    onSaved: (newValue) => _saleDate =
+                        DateFormat(MyTable.saveDateFormat).format(_datetime!),
+                    validator: (value) {
+                      if (value != null) {
+                        if (value.isEmpty) {
+                          return MyTable.getStringByLanguageCode(
+                              'Field is required',
+                              context.read<DataCenter>().languageCode);
+                        }
+                      }
+
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        onPressed: () => showDatePicker(
+                                locale: Locale(
+                                    context.read<DataCenter>().languageCode),
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1800),
+                                lastDate: DateTime(5000))
+                            .then((value) => setState(() {
+                                  _datetime = value;
+                                })),
+                        icon: const Icon(
+                          Icons.calendar_month,
+                        ),
+                      ),
+                      labelText: MyTable.getStringByLanguageCode(
+                          'Date', context.read<DataCenter>().languageCode),
+                    ),
+                  ),
+                  if (_value) //if (context.read<DataCenter>().addSaleCustomerCodeField)
                     DropdownButtonFormField(
                       decoration: InputDecoration(
-                        labelText: MyTable.getStringByLocale(
-                            'Customer code', context.read<DataCenter>().locale),
+                        labelText: MyTable.getStringByLanguageCode(
+                            'Customer code',
+                            context.read<DataCenter>().languageCode),
                       ),
                       validator: (value) {
                         return null;
@@ -236,85 +460,49 @@ class AddSale extends StatelessWidget {
                         });
                       },
                     ),
-                  TextFormField(
-                    keyboardType: TextInputType.number,
-                    onSaved: (newValue) => _itemQuantity = newValue!,
-                    validator: (value) {
-                      if (value != null) {
-                        if (value.isEmpty) {
-                          return MyTable.getStringByLocale('Field is required',
-                              context.read<DataCenter>().locale);
-                        }
-
-                        double? quantity = double.tryParse(value);
-                        if (quantity! > _quantityInStock) {
-                          return MyTable.getStringByLocale('Insufficient stock',
-                              context.read<DataCenter>().locale);
-                        }
-                      }
-
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: MyTable.getStringByLocale(
-                          'Quantity', context.read<DataCenter>().locale),
-                    ),
-                  ),
-                  TextFormField(
-                    controller: TextEditingController(
-                        text: _datetime == null
-                            ? ''
-                            : DateFormat(
-                                    context.read<DataCenter>().locale == 'US'
-                                        ? 'MM/dd/yyyy'
-                                        : 'dd/MM/yyyy')
-                                .format(_datetime!)),
-                    readOnly: true,
-                    onSaved: (newValue) =>
-                        _saleDate = DateFormat('MM/dd/yyyy').format(_datetime!),
-                    validator: (value) {
-                      if (value != null) {
-                        if (value.isEmpty) {
-                          return MyTable.getStringByLocale('Field is required',
-                              context.read<DataCenter>().locale);
-                        }
-                      }
-
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        onPressed: () => showDatePicker(
-                                locale:
-                                    context.read<DataCenter>().locale == 'US'
-                                        ? const Locale('en', 'US')
-                                        : const Locale('fr', 'FR'),
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime.now(),
-                                lastDate: DateTime(5000))
-                            .then((value) => setState(() {
-                                  _datetime = value;
-                                })),
-                        icon: const Icon(
-                          Icons.calendar_month,
-                        ),
+                  SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        MyTable.getStringByLanguageCode('Add customer field',
+                            context.read<DataCenter>().languageCode),
                       ),
-                      labelText: MyTable.getStringByLocale(
-                          'Date', context.read<DataCenter>().locale),
-                    ),
-                  ),
+                      value: _value,
+                      onChanged: (bool value) {
+                        setState(() {
+                          _value = value;
+                        });
+                      } /*=> context
+                          .read<DataCenter>()
+                          .addSaleCustomerCodeField = value,*/
+                      ),
+                  /*StatefulBuilder(builder: (context, setState) {
+                    return SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          MyTable.getStringByLanguageCode('Add customer field',
+                              context.read<DataCenter>().languageCode),
+                        ),
+                        value: _value,
+                        onChanged: (bool value) {
+                          setState(() {
+                            _value = value;
+                          });
+                        } /*=> context
+                          .read<DataCenter>()
+                          .addSaleCustomerCodeField = value,*/
+                        );
+                  }),
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
                     title: Text(
-                      MyTable.getStringByLocale('Add customer field',
-                          context.read<DataCenter>().locale),
+                      MyTable.getStringByLanguageCode('Add customer field',
+                          context.read<DataCenter>().languageCode),
                     ),
                     value: context.watch<DataCenter>().addSaleCustomerCodeField,
                     onChanged: (bool value) => context
                         .read<DataCenter>()
                         .addSaleCustomerCodeField = value,
-                  ),
+                  ),*/
                 ],
               ),
             );
@@ -366,7 +554,7 @@ class MySaleDetails extends StatelessWidget {
                             barrierDismissible: false, // user must tap button!
                             builder: (context) => AlertDialog(
                               title: Text(
-                                '${MyTable.getStringByLocale('Are you sure you want to delete', context.read<DataCenter>().locale)} $saleCode',
+                                '${MyTable.getStringByLanguageCode('Are you sure you want to delete', context.read<DataCenter>().languageCode)} $saleCode',
                               ),
                               actions: [
                                 TextButton(
@@ -410,8 +598,8 @@ class MySaleDetails extends StatelessWidget {
                 Navigator.pop(context);
               },
               child: Text(
-                MyTable.getStringByLocale(
-                    'Delete', context.read<DataCenter>().locale),
+                MyTable.getStringByLanguageCode(
+                    'Delete', context.read<DataCenter>().languageCode),
               ),
             ),
           ],
@@ -431,12 +619,12 @@ class MySaleDetails extends StatelessWidget {
             children: [
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Code', context.read<DataCenter>().locale)}: ${sales[MyTable.saleCodeField]}',
+                  '${MyTable.getStringByLanguageCode('Code', context.read<DataCenter>().languageCode)}: ${sales[MyTable.saleCodeField]}',
                 ),
               ),
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Item code', context.read<DataCenter>().locale)}: ${sales[MyTable.itemCodeField]}',
+                  '${MyTable.getStringByLanguageCode('Item code', context.read<DataCenter>().languageCode)}: ${sales[MyTable.itemCodeField]}',
                 ),
               ),
               if ({sales[MyTable.customerCodeField]}.isNotEmpty &&
@@ -444,17 +632,22 @@ class MySaleDetails extends StatelessWidget {
                       MyTable.customerZero)
                 ListTile(
                   title: Text(
-                    '${MyTable.getStringByLocale('Customer code', context.read<DataCenter>().locale)}: ${sales[MyTable.customerCodeField]}',
+                    '${MyTable.getStringByLanguageCode('Customer code', context.read<DataCenter>().languageCode)}: ${sales[MyTable.customerCodeField]}',
                   ),
                 ),
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Quantity', context.read<DataCenter>().locale)}: ${sales[MyTable.itemQuantityField]}',
+                  '${MyTable.getStringByLanguageCode('Quantity', context.read<DataCenter>().languageCode)}: ${sales[MyTable.itemQuantityField]}',
                 ),
               ),
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Date', context.read<DataCenter>().locale)}: ${MyTable.formatDateToLocale(context.read<DataCenter>().locale, sales[MyTable.saleDateField] as String)}',
+                  '${MyTable.getStringByLanguageCode('Total cost', context.read<DataCenter>().languageCode)}: ${sales[MyTable.saleCostField]}',
+                ),
+              ),
+              ListTile(
+                title: Text(
+                  '${MyTable.getStringByLanguageCode('Date', context.read<DataCenter>().languageCode)}: ${MyTable.formatDateToLanguageCode(context.read<DataCenter>().languageCode, sales[MyTable.saleDateField] as String)}',
                 ),
               ),
             ],

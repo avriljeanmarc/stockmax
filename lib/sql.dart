@@ -78,6 +78,7 @@ class StockmaxDatabase {
       ${MyTable.itemCodeField} TEXT,
       ${MyTable.customerCodeField} TEXT,
       ${MyTable.itemQuantityField} REAL,
+      ${MyTable.saleCostField} REAL,
       ${MyTable.saleDateField} TEXT,
 
       FOREIGN KEY (${MyTable.itemCodeField}) REFERENCES ${MyTable.item} (${MyTable.itemCodeField}) ON UPDATE CASCADE,
@@ -100,7 +101,7 @@ class StockmaxDatabase {
     (
       ${MyTable.itemCodeField} TEXT,
       ${MyTable.atDateField} TEXT,
-      ${MyTable.itemPriceField} TEXT,
+      ${MyTable.itemPriceField} REAL,
 
       PRIMARY KEY (${MyTable.itemCodeField}, ${MyTable.atDateField}),
       FOREIGN KEY (${MyTable.itemCodeField}) REFERENCES ${MyTable.item} (${MyTable.itemCodeField}) ON UPDATE CASCADE

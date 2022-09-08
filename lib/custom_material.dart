@@ -208,9 +208,8 @@ class Settings extends StatelessWidget {
             ],
           )),
       appBarTitle: Text(
-        context.read<DataCenter>().locale == 'US'
-            ? 'Settings'
-            : 'Param\u00E8tres',
+        MyTable.getStringByLanguageCode(
+            'Settings', context.watch<DataCenter>().languageCode),
       ),
     );
   }
@@ -310,8 +309,8 @@ class MyDrawer extends StatelessWidget {
             trailing: const Icon(
               Icons.settings,
             ),
-            title: Text(MyTable.getStringByLocale(
-                'Settings', context.read<DataCenter>().locale)),
+            title: Text(MyTable.getStringByLanguageCode(
+                'Settings', context.watch<DataCenter>().languageCode)),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(
@@ -326,20 +325,130 @@ class MyDrawer extends StatelessWidget {
             thickness: 3,
           ),
           ListTile(
-            title: Text(context.read<DataCenter>().locale == 'US'
-                ? MyTable.getStringByLocale('French', 'FR')
-                : MyTable.getStringByLocale('English', 'US')),
+            trailing: const Icon(
+              Icons.attach_money,
+            ),
+            title: Text(MyTable.getStringByLanguageCode('View prices history',
+                context.watch<DataCenter>().languageCode)),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ItemPricesHistory(),
+                ),
+              );
+            },
+          ),
+          const Divider(
+            thickness: 3,
+          ),
+          ListTile(
+            title: Text(context.read<DataCenter>().languageCode == 'en'
+                ? MyTable.getStringByLanguageCode('French', 'fr')
+                : MyTable.getStringByLanguageCode('English', 'en')),
             trailing: const Icon(
               Icons.language,
             ),
             onTap: () {
-              context.read<DataCenter>().locale == 'US'
-                  ? context.read<DataCenter>().locale = 'FR'
-                  : context.read<DataCenter>().locale = 'US';
+              if (context.read<DataCenter>().languageCode == 'en') {
+                context.read<DataCenter>().languageCode = 'fr';
+              } else {
+                context.read<DataCenter>().languageCode = 'en';
+              }
               Navigator.pop(context);
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ItemPricesHistory extends StatelessWidget {
+  const ItemPricesHistory({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    List<MyItemPriceAtDate> pricesHistory =
+        context.watch<DataCenter>().itemPriceAtDateList;
+
+    return MyScaffold(
+      showFloatingButton: false,
+      appBarTitle: Text(
+        MyTable.getStringByLanguageCode(
+            'Prices history', context.read<DataCenter>().languageCode),
+      ),
+      child: Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(
+            vertical: 10,
+            horizontal: 10,
+          ),
+          child: pricesHistory.isEmpty
+              ? const Icon(
+                  MyTable.itemPriceAtDateIcon,
+                  size: 100,
+                  color: Colors.blue,
+                )
+              : ListView.builder(
+                  itemCount: pricesHistory.length,
+                  itemBuilder: (context, index) => ListTile(
+                    onLongPress: () {
+                      Future.delayed(
+                          const Duration(seconds: 0),
+                          () => {
+                                showDialog<void>(
+                                  context: context,
+                                  barrierDismissible:
+                                      false, // user must tap button!
+                                  builder: (context) => AlertDialog(
+                                    title: Column(children: [
+                                      Text(
+                                        MyTable.getStringByLanguageCode(
+                                            'Are you sure you want to delete',
+                                            context
+                                                .watch<DataCenter>()
+                                                .languageCode),
+                                      ),
+                                      Text(
+                                        '${pricesHistory[index].itemCode!} - ${MyTable.formatDateToLanguageCode(pricesHistory[index].atDate!, context.watch<DataCenter>().languageCode)} - ${pricesHistory[index].itemPrice}',
+                                        style: const TextStyle(
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ]),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text('OK'),
+                                        onPressed: () {
+                                          context.read<DataCenter>().deleteRow(
+                                                MyTable.item,
+                                                MyTable.itemCodeField,
+                                                pricesHistory[index].itemCode!,
+                                              );
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: const Text('CANCEL'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              });
+                    },
+                    title: Text(pricesHistory[index].itemCode!),
+                    subtitle: Text('${pricesHistory[index].itemPrice!}'),
+                    trailing: Text(MyTable.formatDateToLanguageCode(
+                        context.watch<DataCenter>().languageCode,
+                        pricesHistory[index].atDate!)),
+                  ),
+                ),
+        ),
       ),
     );
   }
@@ -362,8 +471,8 @@ class HomeWidget extends StatelessWidget {
           MenuWidget(
             subtitle: '${context.read<DataCenter>().itemList.length}',
             color: Colors.white,
-            title: MyTable.getStringByLocale(
-                'Items', context.watch<DataCenter>().locale),
+            title: MyTable.getStringByLanguageCode(
+                'Items', context.watch<DataCenter>().languageCode),
             icon: const Icon(
               MyTable.itemIcon,
               size: 50,
@@ -378,8 +487,8 @@ class HomeWidget extends StatelessWidget {
           ),
           MenuWidget(
             color: Colors.white,
-            title: MyTable.getStringByLocale(
-                'Customers', context.read<DataCenter>().locale),
+            title: MyTable.getStringByLanguageCode(
+                'Customers', context.watch<DataCenter>().languageCode),
             subtitle: '${context.read<DataCenter>().customerList.length}',
             icon: const Icon(
               MyTable.customerIcon,
@@ -395,8 +504,8 @@ class HomeWidget extends StatelessWidget {
           ),
           MenuWidget(
             color: Colors.white,
-            title: MyTable.getStringByLocale(
-                'Sales', context.read<DataCenter>().locale),
+            title: MyTable.getStringByLanguageCode(
+                'Sales', context.watch<DataCenter>().languageCode),
             subtitle: '${context.read<DataCenter>().saleList.length}',
             icon: const Icon(
               MyTable.saleIcon,
@@ -418,8 +527,8 @@ class HomeWidget extends StatelessWidget {
               ),
             ),
             color: Colors.white,
-            title: MyTable.getStringByLocale(
-                'Suppliers', context.read<DataCenter>().locale),
+            title: MyTable.getStringByLanguageCode(
+                'Suppliers', context.watch<DataCenter>().languageCode),
             subtitle: '${context.read<DataCenter>().supplierList.length}',
             icon: const Icon(
               MyTable.supplierIcon,
@@ -435,8 +544,8 @@ class HomeWidget extends StatelessWidget {
               ),
             ),
             color: Colors.white,
-            title: MyTable.getStringByLocale(
-                'Commands', context.read<DataCenter>().locale),
+            title: MyTable.getStringByLanguageCode(
+                'Commands', context.watch<DataCenter>().languageCode),
             subtitle: '${context.read<DataCenter>().commandList.length}',
             icon: const Icon(
               MyTable.commandIcon,
@@ -447,8 +556,8 @@ class HomeWidget extends StatelessWidget {
         ],
       ),
       appBarTitle: Text(
-        MyTable.getStringByLocale(
-            'Stock & inventory', context.read<DataCenter>().locale),
+        MyTable.getStringByLanguageCode(
+            'Stock & Inventory', context.watch<DataCenter>().languageCode),
       ),
     );
   }
@@ -492,8 +601,9 @@ class Log extends StatelessWidget {
                       initialValue: 'pie123',
                       validator: (value) {
                         if (value == null || value != 'pie123') {
-                          return MyTable.getStringByLocale('Invalid user code',
-                              context.watch<DataCenter>().locale);
+                          return MyTable.getStringByLanguageCode(
+                              'Invalid user code',
+                              context.watch<DataCenter>().languageCode);
                         }
 
                         return null;
@@ -508,8 +618,8 @@ class Log extends StatelessWidget {
                             _securedText = !_securedText;
                           }),
                         ),
-                        labelText: MyTable.getStringByLocale(
-                            'User code', context.watch<DataCenter>().locale),
+                        labelText: MyTable.getStringByLanguageCode('User code',
+                            context.watch<DataCenter>().languageCode),
                       ),
                     ),
                   );
@@ -531,8 +641,8 @@ class Log extends StatelessWidget {
                         );
                       }
                     },
-                    child: Text(MyTable.getStringByLocale(
-                        'Log in', context.watch<DataCenter>().locale)),
+                    child: Text(MyTable.getStringByLanguageCode(
+                        'Log in', context.watch<DataCenter>().languageCode)),
                   ),
                 ),
               ],

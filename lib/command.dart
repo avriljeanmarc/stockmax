@@ -19,8 +19,8 @@ class Command extends StatelessWidget {
         ),
       ),
       appBarTitle: Text(
-        MyTable.getStringByLocale(
-            'List of commands', context.read<DataCenter>().locale),
+        MyTable.getStringByLanguageCode(
+            'List of commands', context.read<DataCenter>().languageCode),
       ),
       child: Center(
         child: Container(
@@ -45,8 +45,8 @@ class Command extends StatelessWidget {
                         ),
                       ),
                     ),
-                    subtitle: Text(MyTable.formatDateToLocale(
-                        context.read<DataCenter>().locale,
+                    subtitle: Text(MyTable.formatDateToLanguageCode(
+                        context.read<DataCenter>().languageCode,
                         commands[index].commandDate!)),
                     leading: MyIcon(text: commands[index].itemCode![0]),
                     title: Text(commands[index].commandCode!),
@@ -109,6 +109,7 @@ class AddCommand extends StatelessWidget {
     }
 
     DateTime? _datetime;
+    bool _value = false;
     return MyScaffold(
       actions: [
         IconButton(
@@ -132,14 +133,18 @@ class AddCommand extends StatelessWidget {
               item = MyItem.copy(MyItem(
                 itemCode: _itemCode,
                 itemQuantity: _finalQuantity,
+                itemDescription: item.itemDescription,
+                itemCategory: item.itemCategory,
+                itemQuality: item.itemQuality,
+                itemUnit: item.itemUnit,
               ));
 
               context.read<DataCenter>().updateItem(item, itemCode: _itemCode!);
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(MyTable.getStringByLocale(
-                      'Command added', context.read<DataCenter>().locale)),
+                  content: Text(MyTable.getStringByLanguageCode('Command added',
+                      context.read<DataCenter>().languageCode)),
                 ),
               );
             }
@@ -152,8 +157,8 @@ class AddCommand extends StatelessWidget {
       ],
       showActionsButton: true,
       showFloatingButton: false,
-      appBarTitle: Text(MyTable.getStringByLocale(
-          'New command', context.read<DataCenter>().locale)),
+      appBarTitle: Text(MyTable.getStringByLanguageCode(
+          'New command', context.read<DataCenter>().languageCode)),
       child: Center(
         child: SingleChildScrollView(
           reverse: true,
@@ -172,8 +177,9 @@ class AddCommand extends StatelessWidget {
                       bool isThere = false;
                       if (value != null) {
                         if (value.isEmpty) {
-                          return MyTable.getStringByLocale('Field is required',
-                              context.read<DataCenter>().locale);
+                          return MyTable.getStringByLanguageCode(
+                              'Field is required',
+                              context.read<DataCenter>().languageCode);
                         }
 
                         context
@@ -189,22 +195,23 @@ class AddCommand extends StatelessWidget {
                         });
 
                         if (isThere) {
-                          return MyTable.getStringByLocale('Duplicated value',
-                              context.read<DataCenter>().locale);
+                          return MyTable.getStringByLanguageCode(
+                              'Duplicated value',
+                              context.read<DataCenter>().languageCode);
                         }
                       }
 
                       return null;
                     },
                     decoration: InputDecoration(
-                      labelText: MyTable.getStringByLocale(
-                          'Code', context.read<DataCenter>().locale),
+                      labelText: MyTable.getStringByLanguageCode(
+                          'Code', context.read<DataCenter>().languageCode),
                     ),
                   ),
                   DropdownButtonFormField(
                     decoration: InputDecoration(
-                      labelText: MyTable.getStringByLocale(
-                          'Item code', context.read<DataCenter>().locale),
+                      labelText: MyTable.getStringByLanguageCode(
+                          'Item code', context.read<DataCenter>().languageCode),
                     ),
                     validator: (value) {
                       return null;
@@ -225,16 +232,17 @@ class AddCommand extends StatelessWidget {
                     validator: (value) {
                       if (value != null) {
                         if (value.isEmpty) {
-                          return MyTable.getStringByLocale('Field is required',
-                              context.read<DataCenter>().locale);
+                          return MyTable.getStringByLanguageCode(
+                              'Field is required',
+                              context.read<DataCenter>().languageCode);
                         }
 
                         double? val = double.tryParse(value);
                         if (val != null) {
                           if (val < 0.0) {
-                            return MyTable.getStringByLocale(
+                            return MyTable.getStringByLanguageCode(
                                 'Value cannot be negative',
-                                context.read<DataCenter>().locale);
+                                context.read<DataCenter>().languageCode);
                           }
                         }
                       }
@@ -242,15 +250,60 @@ class AddCommand extends StatelessWidget {
                       return null;
                     },
                     decoration: InputDecoration(
-                      labelText: MyTable.getStringByLocale(
-                          'Quantity', context.read<DataCenter>().locale),
+                      labelText: MyTable.getStringByLanguageCode(
+                          'Quantity', context.read<DataCenter>().languageCode),
                     ),
                   ),
-                  if (context.read<DataCenter>().addCommandSupplierCodeField)
+                  TextFormField(
+                    controller: TextEditingController(
+                        text: _datetime == null
+                            ? ''
+                            : DateFormat(
+                                    context.read<DataCenter>().languageCode ==
+                                            'US'
+                                        ? MyTable.enDateFormat
+                                        : MyTable.frDateFormat)
+                                .format(_datetime!)),
+                    readOnly: true,
+                    onSaved: (newValue) => _commandDate =
+                        DateFormat(MyTable.saveDateFormat).format(_datetime!),
+                    validator: (value) {
+                      if (value != null) {
+                        if (value.isEmpty) {
+                          return MyTable.getStringByLanguageCode(
+                              'Field is required',
+                              context.read<DataCenter>().languageCode);
+                        }
+                      }
+
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        onPressed: () => showDatePicker(
+                                locale: Locale(
+                                    context.watch<DataCenter>().languageCode),
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1800),
+                                lastDate: DateTime(5000))
+                            .then((value) => setState(() {
+                                  _datetime = value;
+                                })),
+                        icon: const Icon(
+                          Icons.calendar_month,
+                        ),
+                      ),
+                      labelText: MyTable.getStringByLanguageCode(
+                          'Date', context.read<DataCenter>().languageCode),
+                    ),
+                  ),
+                  if (_value) //if (context.read<DataCenter>().addCommandSupplierCodeField)
                     DropdownButtonFormField(
                       decoration: InputDecoration(
-                        labelText: MyTable.getStringByLocale(
-                            'Supplier code', context.read<DataCenter>().locale),
+                        labelText: MyTable.getStringByLanguageCode(
+                            'Supplier code',
+                            context.read<DataCenter>().languageCode),
                       ),
                       validator: (value) {
                         return null;
@@ -265,50 +318,6 @@ class AddCommand extends StatelessWidget {
                         });
                       },
                     ),
-                  TextFormField(
-                    controller: TextEditingController(
-                        text: _datetime == null
-                            ? ''
-                            : DateFormat(
-                                    context.read<DataCenter>().locale == 'US'
-                                        ? 'MM/dd/yyyy'
-                                        : 'dd/MM/yyyy')
-                                .format(_datetime!)),
-                    readOnly: true,
-                    onSaved: (newValue) => _commandDate =
-                        DateFormat('MM/dd/yyyy').format(_datetime!),
-                    validator: (value) {
-                      if (value != null) {
-                        if (value.isEmpty) {
-                          return MyTable.getStringByLocale('Field is required',
-                              context.read<DataCenter>().locale);
-                        }
-                      }
-
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        onPressed: () => showDatePicker(
-                                locale:
-                                    context.read<DataCenter>().locale == 'US'
-                                        ? const Locale('en', 'US')
-                                        : const Locale('fr', 'FR'),
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime.now(),
-                                lastDate: DateTime(5000))
-                            .then((value) => setState(() {
-                                  _datetime = value;
-                                })),
-                        icon: const Icon(
-                          Icons.calendar_month,
-                        ),
-                      ),
-                      labelText: MyTable.getStringByLocale(
-                          'Date', context.read<DataCenter>().locale),
-                    ),
-                  ),
                   /*TextFormField(
                     onChanged: (value) => _finalQuantity,
                     /*onSaved: (newValue) => _finalQuantity,
@@ -317,20 +326,21 @@ class AddCommand extends StatelessWidget {
                     },*/
                     readOnly: true,
                     decoration: InputDecoration(
-                      labelText: MyTable.getStringByLocale(
-                          'Final quantity', context.read<DataCenter>().locale),
+                      labelText: MyTable.getStringByLanguageCode(
+                          'Final quantity', context.read<DataCenter>().languageCode),
                     ),
                   ),*/
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: Text(MyTable.getStringByLocale(
+                    title: Text(MyTable.getStringByLanguageCode(
                         'Add supplier code field',
-                        context.read<DataCenter>().locale)),
-                    value:
-                        context.watch<DataCenter>().addCommandSupplierCodeField,
-                    onChanged: (bool value) => context
-                        .read<DataCenter>()
-                        .addCommandSupplierCodeField = value,
+                        context.read<DataCenter>().languageCode)),
+                    value: _value,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _value = value;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -376,8 +386,8 @@ class MyCommandDetails extends StatelessWidget {
             itemBuilder: (context) => [
               /*PopupMenuItem(
                 child: Text(
-                  MyTable.getStringByLocale(
-                      'Edit', context.read<DataCenter>().locale),
+                  MyTable.getStringByLanguageCode(
+                      'Edit', context.read<DataCenter>().languageCode),
                 ),
                 onTap: () {
                   Future.delayed(
@@ -406,9 +416,11 @@ class MyCommandDetails extends StatelessWidget {
                               builder: (context) => AlertDialog(
                                 title: Column(children: [
                                   Text(
-                                    MyTable.getStringByLocale(
+                                    MyTable.getStringByLanguageCode(
                                         'Are you sure you want to delete',
-                                        context.read<DataCenter>().locale),
+                                        context
+                                            .read<DataCenter>()
+                                            .languageCode),
                                   ),
                                   Text(
                                     commandCode,
@@ -459,8 +471,8 @@ class MyCommandDetails extends StatelessWidget {
                   Navigator.pop(context);
                 },
                 child: Text(
-                  MyTable.getStringByLocale(
-                      'Delete', context.read<DataCenter>().locale),
+                  MyTable.getStringByLanguageCode(
+                      'Delete', context.read<DataCenter>().languageCode),
                 ),
               ),
             ],
@@ -476,17 +488,17 @@ class MyCommandDetails extends StatelessWidget {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Code', context.read<DataCenter>().locale)}: ${commands[MyTable.commandCodeField]}',
+                  '${MyTable.getStringByLanguageCode('Code', context.read<DataCenter>().languageCode)}: ${commands[MyTable.commandCodeField]}',
                 ),
               ),
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Item code', context.read<DataCenter>().locale)}: ${commands[MyTable.itemCodeField]}',
+                  '${MyTable.getStringByLanguageCode('Item code', context.read<DataCenter>().languageCode)}: ${commands[MyTable.itemCodeField]}',
                 ),
               ),
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Quantity', context.read<DataCenter>().locale)}: ${commands[MyTable.itemQuantityField]}',
+                  '${MyTable.getStringByLanguageCode('Quantity', context.read<DataCenter>().languageCode)}: ${commands[MyTable.itemQuantityField]}',
                 ),
               ),
               if ('${commands[MyTable.supplierCodeField]}'.isNotEmpty &&
@@ -494,12 +506,12 @@ class MyCommandDetails extends StatelessWidget {
                       MyTable.supplierZero)
                 ListTile(
                   title: Text(
-                    '${MyTable.getStringByLocale('Supplier code', context.read<DataCenter>().locale)}: ${commands[MyTable.supplierCodeField]}',
+                    '${MyTable.getStringByLanguageCode('Supplier code', context.read<DataCenter>().languageCode)}: ${commands[MyTable.supplierCodeField]}',
                   ),
                 ),
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Date', context.read<DataCenter>().locale)}: ${MyTable.formatDateToLocale(context.read<DataCenter>().locale, commands[MyTable.commandDateField] as String)}',
+                  '${MyTable.getStringByLanguageCode('Date', context.read<DataCenter>().languageCode)}: ${MyTable.formatDateToLanguageCode(context.read<DataCenter>().languageCode, commands[MyTable.commandDateField] as String)}',
                 ),
               ),
             ]),

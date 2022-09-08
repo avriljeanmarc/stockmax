@@ -19,8 +19,8 @@ class Customer extends StatelessWidget {
           ),
         );
       },
-      appBarTitle: Text(MyTable.getStringByLocale(
-          'List of customers', context.read<DataCenter>().locale)),
+      appBarTitle: Text(MyTable.getStringByLanguageCode(
+          'List of customers', context.read<DataCenter>().languageCode)),
       child: Center(
         child: Container(
           margin: const EdgeInsets.symmetric(
@@ -89,8 +89,9 @@ class AddCustomer extends StatelessWidget {
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(MyTable.getStringByLocale(
-                      'Customer added', context.read<DataCenter>().locale)),
+                  content: Text(MyTable.getStringByLanguageCode(
+                      'Customer added',
+                      context.read<DataCenter>().languageCode)),
                 ),
               );
             }
@@ -103,116 +104,128 @@ class AddCustomer extends StatelessWidget {
       ],
       showActionsButton: true,
       showFloatingButton: false,
-      appBarTitle: Text(MyTable.getStringByLocale(
-          'New customer', context.read<DataCenter>().locale)),
+      appBarTitle: Text(MyTable.getStringByLanguageCode(
+          'New customer', context.read<DataCenter>().languageCode)),
       child: Center(
         child: SingleChildScrollView(
           reverse: true,
           padding: const EdgeInsets.symmetric(
             horizontal: 20,
           ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  onSaved: (newValue) => _customerCode = newValue,
-                  validator: (value) {
-                    bool isThere = false;
-                    if (value != null) {
-                      if (value.isEmpty) {
-                        return MyTable.getStringByLocale('Field is required',
-                            context.read<DataCenter>().locale);
-                      }
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      onSaved: (newValue) => _customerCode = newValue,
+                      validator: (value) {
+                        bool isThere = false;
+                        if (value != null) {
+                          if (value.isEmpty) {
+                            return MyTable.getStringByLanguageCode(
+                                'Field is required',
+                                context.read<DataCenter>().languageCode);
+                          }
 
-                      context.read<DataCenter>().customerList.forEach((item) {
-                        if (item.customerCode!
-                                .toLowerCase()
-                                .replaceAll(' ', '') ==
-                            value.toLowerCase().replaceAll(' ', '')) {
-                          isThere = true;
+                          context
+                              .read<DataCenter>()
+                              .customerList
+                              .forEach((item) {
+                            if (item.customerCode!
+                                    .toLowerCase()
+                                    .replaceAll(' ', '') ==
+                                value.toLowerCase().replaceAll(' ', '')) {
+                              isThere = true;
+                            }
+                          });
+
+                          if (isThere) {
+                            return MyTable.getStringByLanguageCode(
+                                'Duplicated value',
+                                context.read<DataCenter>().languageCode);
+                          }
                         }
-                      });
 
-                      if (isThere) {
-                        return MyTable.getStringByLocale('Duplicated value',
-                            context.read<DataCenter>().locale);
-                      }
-                    }
-
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: MyTable.getStringByLocale(
-                        'Code', context.read<DataCenter>().locale),
-                  ),
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  onSaved: (newValue) => _customerFirstName = newValue,
-                  validator: (value) {
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: MyTable.getStringByLocale(
-                        'First name', context.read<DataCenter>().locale),
-                  ),
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  onSaved: (newValue) => _customerLastName = newValue,
-                  validator: (value) {
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: MyTable.getStringByLocale(
-                        'Last name', context.read<DataCenter>().locale),
-                  ),
-                ),
-                if (context.read<DataCenter>().addCustomerAddressField)
-                  TextFormField(
-                    keyboardType: TextInputType.visiblePassword,
-                    onSaved: (newValue) => _customerAddress = newValue,
-                    validator: (value) {
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: MyTable.getStringByLocale(
-                          'Address', context.read<DataCenter>().locale),
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode(
+                            'Code', context.read<DataCenter>().languageCode),
+                      ),
                     ),
-                  ),
-                if (context.read<DataCenter>().addCustomerEmailField)
-                  TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    onSaved: (newValue) => _customerEmail = newValue,
-                    validator: (value) {
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: MyTable.getStringByLocale(
-                          'E-mail', context.read<DataCenter>().locale),
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      onSaved: (newValue) => _customerFirstName = newValue,
+                      validator: (value) {
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode('First name',
+                            context.read<DataCenter>().languageCode),
+                      ),
                     ),
-                  ),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(MyTable.getStringByLocale(
-                      'Add e-mail field', context.read<DataCenter>().locale)),
-                  value: context.watch<DataCenter>().addCustomerEmailField,
-                  onChanged: (bool value) =>
-                      context.read<DataCenter>().addCustomerEmailField = value,
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      onSaved: (newValue) => _customerLastName = newValue,
+                      validator: (value) {
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode('Last name',
+                            context.read<DataCenter>().languageCode),
+                      ),
+                    ),
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      onSaved: (newValue) => _customerAddress = newValue,
+                      validator: (value) {
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode(
+                            'Address', context.read<DataCenter>().languageCode),
+                      ),
+                    ),
+                    TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      onSaved: (newValue) => _customerEmail = newValue,
+                      validator: (value) {
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode(
+                            'E-mail', context.read<DataCenter>().languageCode),
+                      ),
+                    ),
+                    /*SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(MyTable.getStringByLanguageCode(
+                            'Add e-mail field',
+                            context.read<DataCenter>().languageCode)),
+                        value: _value1,
+                        onChanged: (bool value) {
+                          setState(() {
+                            _value1 = value;
+                          });
+                        }),
+                    SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(MyTable.getStringByLanguageCode(
+                            'Add address field',
+                            context.read<DataCenter>().languageCode)),
+                        value: _value,
+                        onChanged: (bool value) {
+                          setState(() {
+                            _value = value;
+                          });
+                        }),*/
+                  ],
                 ),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(MyTable.getStringByLocale(
-                      'Add address field', context.read<DataCenter>().locale)),
-                  value: context.read<DataCenter>().addCustomerAddressField,
-                  onChanged: (bool value) => context
-                      .read<DataCenter>()
-                      .addCustomerAddressField = value,
-                ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),
@@ -253,8 +266,8 @@ class MyCustomerDetails extends StatelessWidget {
           itemBuilder: (context) => [
             PopupMenuItem(
               child: Text(
-                MyTable.getStringByLocale(
-                    'Edit', context.read<DataCenter>().locale),
+                MyTable.getStringByLanguageCode(
+                    'Edit', context.read<DataCenter>().languageCode),
               ),
               onTap: () {
                 Future.delayed(
@@ -280,7 +293,7 @@ class MyCustomerDetails extends StatelessWidget {
                             barrierDismissible: false, // user must tap button!
                             builder: (context) => AlertDialog(
                               title: Text(
-                                '${MyTable.getStringByLocale('Are you sure you want to delete', context.read<DataCenter>().locale)} $customerCode',
+                                '${MyTable.getStringByLanguageCode('Are you sure you want to delete', context.read<DataCenter>().languageCode)} $customerCode',
                               ),
                               actions: [
                                 TextButton(
@@ -307,8 +320,8 @@ class MyCustomerDetails extends StatelessWidget {
                 Navigator.pop(context);
               },
               child: Text(
-                MyTable.getStringByLocale(
-                    'Delete', context.read<DataCenter>().locale),
+                MyTable.getStringByLanguageCode(
+                    'Delete', context.read<DataCenter>().languageCode),
               ),
             ),
           ],
@@ -328,29 +341,29 @@ class MyCustomerDetails extends StatelessWidget {
             children: [
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Code', context.read<DataCenter>().locale)}: ${customer[MyTable.customerCodeField]}',
+                  '${MyTable.getStringByLanguageCode('Code', context.read<DataCenter>().languageCode)}: ${customer[MyTable.customerCodeField]}',
                 ),
               ),
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('First name', context.read<DataCenter>().locale)}: ${customer[MyTable.customerFirstNameField]}',
+                  '${MyTable.getStringByLanguageCode('First name', context.read<DataCenter>().languageCode)}: ${customer[MyTable.customerFirstNameField]}',
                 ),
               ),
               ListTile(
                 title: Text(
-                  '${MyTable.getStringByLocale('Last name', context.read<DataCenter>().locale)}: ${customer[MyTable.customerLastNameField]}',
+                  '${MyTable.getStringByLanguageCode('Last name', context.read<DataCenter>().languageCode)}: ${customer[MyTable.customerLastNameField]}',
                 ),
               ),
               if ('${customer[MyTable.customerAddressField]}'.isNotEmpty)
                 ListTile(
                   title: Text(
-                    '${MyTable.getStringByLocale('Address', context.read<DataCenter>().locale)}: ${customer[MyTable.customerAddressField]}',
+                    '${MyTable.getStringByLanguageCode('Address', context.read<DataCenter>().languageCode)}: ${customer[MyTable.customerAddressField]}',
                   ),
                 ),
               if ('${customer[MyTable.customerEmailField]}'.isNotEmpty)
                 ListTile(
                   title: Text(
-                    '${MyTable.getStringByLocale('E-mail', context.read<DataCenter>().locale)}: ${customer[MyTable.customerEmailField]}',
+                    '${MyTable.getStringByLanguageCode('E-mail', context.read<DataCenter>().languageCode)}: ${customer[MyTable.customerEmailField]}',
                   ),
                 ),
             ],
@@ -396,8 +409,9 @@ class EditCustomer extends StatelessWidget {
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(MyTable.getStringByLocale(
-                      'Customer edited', context.read<DataCenter>().locale)),
+                  content: Text(MyTable.getStringByLanguageCode(
+                      'Customer edited',
+                      context.read<DataCenter>().languageCode)),
                 ),
               );
 
@@ -413,83 +427,131 @@ class EditCustomer extends StatelessWidget {
       ],
       showActionsButton: true,
       showFloatingButton: false,
-      appBarTitle: Text(MyTable.getStringByLocale(
-          'Edit customer', context.read<DataCenter>().locale)),
+      appBarTitle: Text(MyTable.getStringByLanguageCode(
+          'Edit customer', context.read<DataCenter>().languageCode)),
       child: Center(
         child: SingleChildScrollView(
           reverse: true,
           padding: const EdgeInsets.symmetric(
             horizontal: 20,
           ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  initialValue: customer.customerCode,
-                  keyboardType: TextInputType.visiblePassword,
-                  onSaved: (newValue) => _customerCode = newValue,
-                  validator: (value) {
-                    bool isThere = false;
-                    if (value != null) {
-                      if (value.isEmpty) {
-                        return MyTable.getStringByLocale('Field is required',
-                            context.read<DataCenter>().locale);
-                      }
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      initialValue: customer.customerCode,
+                      keyboardType: TextInputType.visiblePassword,
+                      onSaved: (newValue) => _customerCode = newValue,
+                      validator: (value) {
+                        bool isThere = false;
+                        if (value != null) {
+                          if (value.isEmpty) {
+                            return MyTable.getStringByLanguageCode(
+                                'Field is required',
+                                context.read<DataCenter>().languageCode);
+                          }
 
-                      List<MyCustomer> items =
-                          context.read<DataCenter>().customerList;
-                      for (int i = 0; i < items.length; i++) {
-                        if (i == index) {
-                          continue;
+                          List<MyCustomer> items =
+                              context.read<DataCenter>().customerList;
+                          for (int i = 0; i < items.length; i++) {
+                            if (i == index) {
+                              continue;
+                            }
+
+                            if (items[i]
+                                    .customerCode!
+                                    .toLowerCase()
+                                    .replaceAll(' ', '') ==
+                                value.toLowerCase().replaceAll(' ', '')) {
+                              isThere = true;
+                            }
+                          }
+
+                          if (isThere) {
+                            return MyTable.getStringByLanguageCode(
+                                'Duplicated value',
+                                context.read<DataCenter>().languageCode);
+                          }
                         }
-
-                        if (items[i]
-                                .customerCode!
-                                .toLowerCase()
-                                .replaceAll(' ', '') ==
-                            value.toLowerCase().replaceAll(' ', '')) {
-                          isThere = true;
-                        }
-                      }
-
-                      if (isThere) {
-                        return MyTable.getStringByLocale('Duplicated value',
-                            context.read<DataCenter>().locale);
-                      }
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: MyTable.getStringByLocale(
-                        'Code', context.read<DataCenter>().locale),
-                  ),
-                ),
-                TextFormField(
-                  initialValue: customer.customerFirstName,
-                  keyboardType: TextInputType.visiblePassword,
-                  onSaved: (newValue) => _customerFirstName = newValue,
-                  validator: (value) {
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: MyTable.getStringByLocale(
-                        'First name', context.read<DataCenter>().locale),
-                  ),
-                ),
-                TextFormField(
-                  initialValue: customer.customerLastName,
-                  keyboardType: TextInputType.visiblePassword,
-                  onSaved: (newValue) => _customerLastName = newValue,
-                  validator: (value) {
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: MyTable.getStringByLocale(
-                        'Last name', context.read<DataCenter>().locale),
-                  ),
-                ),
-                if (context.read<DataCenter>().addCustomerAddressField)
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode(
+                            'Code', context.read<DataCenter>().languageCode),
+                      ),
+                    ),
+                    TextFormField(
+                      initialValue: customer.customerFirstName,
+                      keyboardType: TextInputType.visiblePassword,
+                      onSaved: (newValue) => _customerFirstName = newValue,
+                      validator: (value) {
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode('First name',
+                            context.read<DataCenter>().languageCode),
+                      ),
+                    ),
+                    TextFormField(
+                      initialValue: customer.customerLastName,
+                      keyboardType: TextInputType.visiblePassword,
+                      onSaved: (newValue) => _customerLastName = newValue,
+                      validator: (value) {
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode('Last name',
+                            context.read<DataCenter>().languageCode),
+                      ),
+                    ),
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      onSaved: (newValue) => _customerAddress = newValue,
+                      validator: (value) {
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode(
+                            'Address', context.read<DataCenter>().languageCode),
+                      ),
+                    ),
+                    TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      onSaved: (newValue) => _customerEmail = newValue,
+                      validator: (value) {
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode(
+                            'E-mail', context.read<DataCenter>().languageCode),
+                      ),
+                    ),
+                    /*SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(MyTable.getStringByLanguageCode(
+                            'Add e-mail field',
+                            context.read<DataCenter>().languageCode)),
+                        value: _value1,
+                        onChanged: (bool value) {
+                          setState(() {
+                            _value1 = value;
+                          });
+                        }),
+                    SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(MyTable.getStringByLanguageCode(
+                            'Add address field',
+                            context.read<DataCenter>().languageCode)),
+                        value: _value,
+                        onChanged: (bool value) {
+                          setState(() {
+                            _value = value;
+                          });
+                        }),
+                    if (context.read<DataCenter>().addCustomerAddressField)
                   //if ('${customer.customerAddress}'.isNotEmpty)
                   TextFormField(
                     initialValue: customer.customerAddress,
@@ -499,8 +561,8 @@ class EditCustomer extends StatelessWidget {
                       return null;
                     },
                     decoration: InputDecoration(
-                      labelText: MyTable.getStringByLocale(
-                          'Address', context.read<DataCenter>().locale),
+                      labelText: MyTable.getStringByLanguageCode(
+                          'Address', context.read<DataCenter>().languageCode),
                     ),
                   ),
                 if (context.read<DataCenter>().addCustomerEmailField)
@@ -513,29 +575,31 @@ class EditCustomer extends StatelessWidget {
                       return null;
                     },
                     decoration: InputDecoration(
-                      labelText: MyTable.getStringByLocale(
-                          'E-mail', context.read<DataCenter>().locale),
+                      labelText: MyTable.getStringByLanguageCode(
+                          'E-mail', context.read<DataCenter>().languageCode),
                     ),
                   ),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(MyTable.getStringByLocale(
-                      'Add e-mail field', context.read<DataCenter>().locale)),
+                  title: Text(MyTable.getStringByLanguageCode(
+                      'Add e-mail field', context.read<DataCenter>().languageCode)),
                   value: context.watch<DataCenter>().addCustomerEmailField,
                   onChanged: (bool value) =>
                       context.read<DataCenter>().addCustomerEmailField = value,
                 ),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(MyTable.getStringByLocale(
-                      'Add address field', context.read<DataCenter>().locale)),
+                  title: Text(MyTable.getStringByLanguageCode(
+                      'Add address field', context.read<DataCenter>().languageCode)),
                   value: context.read<DataCenter>().addCustomerAddressField,
                   onChanged: (bool value) => context
                       .read<DataCenter>()
                       .addCustomerAddressField = value,
+                ),*/
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),

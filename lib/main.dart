@@ -20,8 +20,9 @@ class Stockmax extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
         ],
         supportedLocales: const [
-          Locale('zh', 'CH'),
+          //Locale('zh', 'CH'),
           Locale('en', 'US'),
+          Locale('fr', 'FR'),
         ],
         title: 'Stockmax',
         theme: ThemeData(

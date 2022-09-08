@@ -18,8 +18,8 @@ class Supplier extends StatelessWidget {
         ),
       ),
       appBarTitle: Text(
-        MyTable.getStringByLocale(
-            'List of suppliers', context.read<DataCenter>().locale),
+        MyTable.getStringByLanguageCode(
+            'List of suppliers', context.read<DataCenter>().languageCode),
       ),
       child: Center(
         child: Container(
@@ -83,8 +83,9 @@ class AddSupplier extends StatelessWidget {
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(MyTable.getStringByLocale(
-                      'Supplier added', context.read<DataCenter>().locale)),
+                  content: Text(MyTable.getStringByLanguageCode(
+                      'Supplier added',
+                      context.read<DataCenter>().languageCode)),
                 ),
               );
             }
@@ -97,88 +98,100 @@ class AddSupplier extends StatelessWidget {
       ],
       showActionsButton: true,
       showFloatingButton: false,
-      appBarTitle: Text(MyTable.getStringByLocale(
-          'New supplier', context.read<DataCenter>().locale)),
+      appBarTitle: Text(MyTable.getStringByLanguageCode(
+          'New supplier', context.read<DataCenter>().languageCode)),
       child: Center(
         child: SingleChildScrollView(
           reverse: true,
           padding: const EdgeInsets.symmetric(
             horizontal: 20,
           ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  onSaved: (newValue) => _supplierCode = newValue!,
-                  validator: (value) {
-                    bool isThere = false;
-                    if (value != null) {
-                      if (value.isEmpty) {
-                        return MyTable.getStringByLocale('Field is required',
-                            context.read<DataCenter>().locale);
-                      }
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      onSaved: (newValue) => _supplierCode = newValue!,
+                      validator: (value) {
+                        bool isThere = false;
+                        if (value != null) {
+                          if (value.isEmpty) {
+                            return MyTable.getStringByLanguageCode(
+                                'Field is required',
+                                context.read<DataCenter>().languageCode);
+                          }
 
-                      context.read<DataCenter>().supplierList.forEach((item) {
-                        if (item.supplierCode!
-                                .toLowerCase()
-                                .replaceAll(' ', '') ==
-                            value.toLowerCase().replaceAll(' ', '')) {
-                          isThere = true;
+                          context
+                              .read<DataCenter>()
+                              .supplierList
+                              .forEach((item) {
+                            if (item.supplierCode!
+                                    .toLowerCase()
+                                    .replaceAll(' ', '') ==
+                                value.toLowerCase().replaceAll(' ', '')) {
+                              isThere = true;
+                            }
+                          });
+
+                          if (isThere) {
+                            return MyTable.getStringByLanguageCode(
+                                'Duplicated value',
+                                context.read<DataCenter>().languageCode);
+                          }
                         }
-                      });
 
-                      if (isThere) {
-                        return MyTable.getStringByLocale('Duplicated value',
-                            context.read<DataCenter>().locale);
-                      }
-                    }
-
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: MyTable.getStringByLocale(
-                        'Code', context.read<DataCenter>().locale),
-                  ),
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode(
+                            'Code', context.read<DataCenter>().languageCode),
+                      ),
+                    ),
+                    //if (context.read<DataCenter>().addItemDescriptionField)
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      onSaved: (newValue) => _supplierName = newValue,
+                      validator: (value) {
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode(
+                            'Supplier name',
+                            context.read<DataCenter>().languageCode),
+                      ),
+                    ),
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      onSaved: (newValue) => _supplierAddress = newValue!,
+                      validator: (value) {
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode(
+                            'Supplier address',
+                            context.read<DataCenter>().languageCode),
+                      ),
+                    ),
+                    //if (context.read<DataCenter>().addItemUnitField)
+                    TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      onSaved: (newValue) => _supplierEmail = newValue,
+                      validator: (value) {
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: MyTable.getStringByLanguageCode(
+                            'Supplier e-mail',
+                            context.read<DataCenter>().languageCode),
+                      ),
+                    ),
+                  ],
                 ),
-                //if (context.read<DataCenter>().addItemDescriptionField)
-                TextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  onSaved: (newValue) => _supplierName = newValue,
-                  validator: (value) {
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: MyTable.getStringByLocale(
-                        'Supplier name', context.read<DataCenter>().locale),
-                  ),
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  onSaved: (newValue) => _supplierAddress = newValue!,
-                  validator: (value) {
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: MyTable.getStringByLocale(
-                        'Supplier address', context.read<DataCenter>().locale),
-                  ),
-                ),
-                //if (context.read<DataCenter>().addItemUnitField)
-                TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  onSaved: (newValue) => _supplierEmail = newValue,
-                  validator: (value) {
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: MyTable.getStringByLocale(
-                        'Supplier e-mail', context.read<DataCenter>().locale),
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),

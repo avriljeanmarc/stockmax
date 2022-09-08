@@ -10,10 +10,10 @@ class MySupplier {
   final String? supplierEmail;
 
   const MySupplier({
-    required this.supplierCode,
-    required this.supplierName,
-    this.supplierAddress = '',
-    this.supplierEmail = '',
+    this.supplierCode,
+    this.supplierName,
+    this.supplierAddress,
+    this.supplierEmail,
   });
 
   Map<String, Object?> toJson() => {
@@ -48,11 +48,11 @@ class MyCommand {
   final String? commandDate;
 
   const MyCommand({
-    required this.commandCode,
-    required this.itemCode,
-    required this.itemQuantity,
-    this.supplierCode = '',
-    required this.commandDate,
+    this.commandCode,
+    this.itemCode,
+    this.itemQuantity,
+    this.supplierCode,
+    this.commandDate,
   });
 
   Map<String, Object?> toJson() => {
@@ -84,27 +84,35 @@ class MyCommand {
 
 class MyItemPriceAtDate {
   final String? itemCode;
-  final DateTime? atDate;
+  final String? atDate;
   final double? itemPrice;
 
   const MyItemPriceAtDate({
-    required this.itemCode,
-    required this.atDate,
-    required this.itemPrice,
+    this.itemCode,
+    this.atDate,
+    this.itemPrice,
   });
 
   Map<String, Object?> toJson() => {
         MyTable.itemCodeField: itemCode ?? '',
         MyTable.atDateField: atDate ?? '',
-        MyTable.itemPriceField: itemPrice ?? '',
+        MyTable.itemPriceField: itemPrice ?? 0.0,
       };
 
   static MyItemPriceAtDate fromJson(Map<String, Object?> json) =>
       MyItemPriceAtDate(
         itemCode: json[MyTable.itemCodeField] as String,
-        atDate: json[MyTable.atDateField] as DateTime,
+        atDate: json[MyTable.atDateField] as String,
         itemPrice: json[MyTable.itemPriceField] as double,
       );
+
+  static MyItemPriceAtDate copy(MyItemPriceAtDate price) {
+    return MyItemPriceAtDate(
+      itemCode: price.itemCode ?? '',
+      atDate: price.atDate ?? '',
+      itemPrice: price.itemPrice ?? 0.0,
+    );
+  }
 }
 
 class MyItem {
@@ -116,18 +124,18 @@ class MyItem {
   final String? itemQuality;
 
   const MyItem({
-    required this.itemCode,
-    this.itemDescription = '',
-    this.itemQuantity = 0.0,
-    this.itemUnit = '',
-    this.itemCategory = '',
-    this.itemQuality = '',
+    this.itemCode,
+    this.itemDescription,
+    this.itemQuantity,
+    this.itemUnit,
+    this.itemCategory,
+    this.itemQuality,
   });
 
   Map<String, Object?> toJson() => {
         MyTable.itemCodeField: itemCode ?? '',
         MyTable.itemDescriptionField: itemDescription ?? '',
-        MyTable.itemQuantityField: itemQuantity ?? '',
+        MyTable.itemQuantityField: itemQuantity ?? 0.0,
         MyTable.itemUnitField: itemUnit ?? '',
         MyTable.itemCategoryField: itemCategory ?? '',
         MyTable.itemQualityField: itemQuality ?? '',
@@ -159,7 +167,7 @@ class MyUser {
   final String? settingsAccessCode;
 
   const MyUser({
-    required this.userCode,
+    this.userCode,
     this.settingsAccessCode,
   });
 
@@ -207,9 +215,9 @@ class MyCustomer {
 
   static MyCustomer copy(MyCustomer customer) {
     return MyCustomer(
-      customerCode: customer.customerCode,
-      customerFirstName: customer.customerFirstName,
-      customerLastName: customer.customerLastName,
+      customerCode: customer.customerCode ?? '',
+      customerFirstName: customer.customerFirstName ?? '',
+      customerLastName: customer.customerLastName ?? '',
       customerAddress: customer.customerAddress ?? '',
       customerEmail: customer.customerEmail ?? '',
     );
@@ -221,21 +229,24 @@ class MySale {
   final String? itemCode;
   final String? customerCode;
   final double? itemQuantity;
+  final double? saleCost;
   final String? saleDate;
 
   const MySale({
-    required this.saleCode,
-    required this.itemCode,
+    this.saleCode,
+    this.itemCode,
     this.customerCode,
-    required this.itemQuantity,
-    required this.saleDate,
+    this.itemQuantity,
+    this.saleCost,
+    this.saleDate,
   });
 
   Map<String, Object?> toJson() => {
         MyTable.saleCodeField: saleCode ?? '',
         MyTable.itemCodeField: itemCode ?? '',
         MyTable.customerCodeField: customerCode ?? '',
-        MyTable.itemQuantityField: itemQuantity ?? '',
+        MyTable.itemQuantityField: itemQuantity ?? 0.0,
+        MyTable.saleCostField: saleCost ?? 0.0,
         MyTable.saleDateField: saleDate ?? '',
       };
 
@@ -244,6 +255,7 @@ class MySale {
         itemCode: json[MyTable.itemCodeField] as String,
         customerCode: json[MyTable.customerCodeField] as String,
         itemQuantity: json[MyTable.itemQuantityField] as double,
+        saleCost: json[MyTable.saleCostField] as double,
         saleDate: json[MyTable.saleDateField] as String,
       );
 
@@ -253,13 +265,14 @@ class MySale {
       itemCode: sale.itemCode ?? '',
       customerCode: sale.customerCode ?? '',
       itemQuantity: sale.itemQuantity ?? 0.0,
+      saleCost: sale.saleCost ?? 0.0,
       saleDate: sale.saleDate ?? '',
     );
   }
 }
 
 class DataCenter extends ChangeNotifier {
-  String _locale = 'FR';
+  String _languageCode = 'fr';
   List<MyItem> _itemList = [];
   List<MyCustomer> _customerList = [];
   List<MySupplier> _supplierList = [];
@@ -269,7 +282,7 @@ class DataCenter extends ChangeNotifier {
   int lessStockValue = 100;
   //For settings purpose
 
-  bool _addItemDescriptionField = false;
+  /*bool _addItemDescriptionField = false;
   bool _addItemQualityField = false;
   bool _addItemUnitField = false;
   bool _addItemCategoryField = false;
@@ -279,7 +292,7 @@ class DataCenter extends ChangeNotifier {
 
   bool _addSaleCustomerCodeField = false;
 
-  bool _addCommandSupplierCodeField = false;
+  bool _addCommandSupplierCodeField = false;*/
 
   final StockmaxDatabase _database = StockmaxDatabase.instance;
 
@@ -289,10 +302,10 @@ class DataCenter extends ChangeNotifier {
 
   Future<void> _loadUserSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    _locale = prefs.getString('locale') ?? 'FR';
+    _languageCode = prefs.getString('languageCode') ?? 'fr';
   }
 
-  bool get addCommandSupplierCodeField => _addCommandSupplierCodeField;
+  /*bool get addCommandSupplierCodeField => _addCommandSupplierCodeField;
   set addCommandSupplierCodeField(bool value) {
     _addCommandSupplierCodeField = value;
     notifyListeners();
@@ -352,7 +365,7 @@ class DataCenter extends ChangeNotifier {
     _addSaleCustomerCodeField = false;
     _addCommandSupplierCodeField = false;
   }
-
+*/
   MyItem? getItemByCode(String itemCode) {
     MyItem? item;
     for (MyItem element in _itemList) {
@@ -363,16 +376,17 @@ class DataCenter extends ChangeNotifier {
     return item;
   }
 
-  String get locale => _locale;
-  set locale(String locale) {
-    _locale = locale;
-    _setLocale(locale);
+  String get languageCode => _languageCode;
+  set languageCode(String languageCode) {
+    _languageCode = languageCode;
+
+    _setLanguageCode(languageCode);
     notifyListeners();
   }
 
-  void _setLocale(String locale) async {
+  void _setLanguageCode(String languageCode) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('locale', locale);
+    prefs.setString('languageCode', languageCode);
   }
 
   void _init() async {
@@ -442,6 +456,12 @@ class DataCenter extends ChangeNotifier {
   void insertCommand(MyCommand command) async {
     await _database.insertCommand(command);
     _commandList.add(command);
+    notifyListeners();
+  }
+
+  void insertItemPriceAtDate(MyItemPriceAtDate price) async {
+    await _database.insertItemPriceAtDate(price);
+    _itemPriceAtDateList.add(price);
     notifyListeners();
   }
 
