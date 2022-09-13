@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'data_model.dart';
+import 'model.dart';
 import 'mytable.dart';
 
 class StockmaxDatabase {
