@@ -279,7 +279,7 @@ class DataCenter extends ChangeNotifier {
   List<MySale> _saleList = [];
   List<MyItemPriceAtDate> _itemPriceAtDateList = [];
   List<MyCommand> _commandList = [];
-  int lessStockValue = 100;
+  final int lessStockValue = 100;
   //For settings purpose
 
   /*bool _addItemDescriptionField = false;

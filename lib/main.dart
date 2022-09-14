@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'custom_material.dart';
-import 'data_model.dart';
+import 'more.dart';
+import 'model.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() => runApp(const Stockmax());

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'data_model.dart';
+import 'model.dart';
 import 'package:provider/provider.dart';
-import 'custom_material.dart';
+import 'materials.dart';
 import 'mytable.dart';
+import 'more.dart';
 
 class Customer extends StatelessWidget {
   const Customer({Key? key}) : super(key: key);

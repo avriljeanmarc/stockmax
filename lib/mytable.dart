@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'sql.dart';
-import 'data_model.dart';
+import 'model.dart';
 
 class GenerateData {
   final List<Map<String, Object?>> itemData = [];
@@ -37,7 +37,7 @@ class GenerateData {
     });
 
     itemData.add({
-      MyTable.itemCodeField: 'BenH DOUBLE PLATINUM',
+      MyTable.itemCodeField: 'BOSH DOUBLE PLATINUM',
       MyTable.itemQuantityField: 100.0,
       MyTable.itemUnitField: '',
       MyTable.itemCategoryField: '',
