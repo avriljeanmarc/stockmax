@@ -40,9 +40,18 @@ class GenerateData {
       MyTable.itemCodeField: 'BOSH DOUBLE PLATINUM',
       MyTable.itemQuantityField: 100.0,
       MyTable.itemUnitField: '',
-      MyTable.itemCategoryField: '',
+      MyTable.itemCategoryField: 'SPARK PLUG',
       MyTable.itemQualityField: '',
       MyTable.itemDescriptionField: '',
+    });
+
+    itemData.add({
+      MyTable.itemCodeField: 'B-BOSH',
+      MyTable.itemQuantityField: 12.0,
+      MyTable.itemUnitField: 'UNIT',
+      MyTable.itemCategoryField: 'BATTERY',
+      MyTable.itemQualityField: 'NEW',
+      MyTable.itemDescriptionField: 'BUILD TO LAST',
     });
     /*itemData.add({
       MyTable.itemCodeField: 'ART-001',
@@ -99,7 +108,7 @@ class GenerateData {
     });*/
 
     customerData.add({
-      MyTable.customerCodeField: 'CLIENT-000',
+      MyTable.customerCodeField: 'CL000',
       MyTable.customerFirstNameField: 'Jhon',
       MyTable.customerLastNameField: 'PIERRE',
       MyTable.customerAddressField: '',
@@ -107,7 +116,7 @@ class GenerateData {
     });
 
     customerData.add({
-      MyTable.customerCodeField: 'CLIENT-001',
+      MyTable.customerCodeField: 'CL001',
       MyTable.customerFirstNameField: 'Rudolf',
       MyTable.customerLastNameField: 'DANGUIE',
       MyTable.customerAddressField: '',
@@ -115,7 +124,7 @@ class GenerateData {
     });
 
     customerData.add({
-      MyTable.customerCodeField: 'CLIENT-002',
+      MyTable.customerCodeField: 'CL002',
       MyTable.customerFirstNameField: 'Pablo',
       MyTable.customerLastNameField: 'ESCOBAR',
       MyTable.customerAddressField: '',
@@ -139,10 +148,31 @@ class GenerateData {
     });*/
 
     supplierData.add({
-      MyTable.supplierCodeField: 'SP-001',
-      MyTable.supplierNameField: 'E-POWER',
-      MyTable.supplierAddressField: 'frEE LAND TRADE PARK RUE LISIen',
+      MyTable.supplierCodeField: 'SP001',
+      MyTable.supplierNameField: 'E-POWER S.A.',
+      MyTable.supplierAddressField: 'FREE LAND TRADE PARK RUE LISIUS',
       MyTable.supplierEmailField: 'epowerhaiti.com',
+    });
+
+    supplierData.add({
+      MyTable.supplierCodeField: 'SP786',
+      MyTable.supplierNameField: 'CK HARDWARE',
+      MyTable.supplierAddressField: 'PARK INDUSTRIEL',
+      MyTable.supplierEmailField: 'ckhardware.ht',
+    });
+
+    supplierData.add({
+      MyTable.supplierCodeField: 'SP345',
+      MyTable.supplierNameField: 'EYESMART',
+      MyTable.supplierAddressField: 'DELMAS 31 NEXT TO RADIO GINEN',
+      MyTable.supplierEmailField: 'eyesmart.com',
+    });
+
+    supplierData.add({
+      MyTable.supplierCodeField: 'SP002',
+      MyTable.supplierNameField: 'UNIPIECE S.A.',
+      MyTable.supplierAddressField: 'PV HAITI',
+      MyTable.supplierEmailField: 'unipiece.com',
     });
   }
 

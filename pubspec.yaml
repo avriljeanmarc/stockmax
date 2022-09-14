@@ -37,7 +37,8 @@ dependencies:
   badges:
   excel:
   flutter_slidable:
-  flutter_launcher_icons:
+  file_picker:
+  file_manager:
   flutter_localizations:
     sdk: flutter
 
@@ -48,6 +49,13 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.9.2
+
+flutter_icons:
+  ios: true
+  android: true
+  image_path_ios: "assets/favicon.png"
+  image_path_android: "assets/favicon.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
