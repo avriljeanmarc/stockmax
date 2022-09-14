@@ -56,7 +56,7 @@ class ItemPricesHistory extends StatelessWidget {
                                                 .languageCode),
                                       ),
                                       Text(
-                                        '${pricesHistory[index].itemCode!} - ${MyTable.formatDateToLanguageCode(pricesHistory[index].atDate!, context.read<DataCenter>().languageCode)} - ${pricesHistory[index].itemPrice}',
+                                        '${pricesHistory[index].itemCode!} - ${MyTable.formatDateToLanguageCode(context.read<DataCenter>().languageCode, pricesHistory[index].atDate!)} - ${pricesHistory[index].itemPrice}',
                                         style: const TextStyle(
                                           color: Colors.red,
                                         ),
@@ -113,7 +113,7 @@ class HomeWidget extends StatelessWidget {
         padding: const EdgeInsets.all(15),
         children: [
           MenuWidget(
-            subtitle: '${context.read<DataCenter>().itemList.length}',
+            subtitle: '${context.watch<DataCenter>().itemList.length}',
             color: Colors.white,
             title: MyTable.getStringByLanguageCode(
                 'Items', context.read<DataCenter>().languageCode),
@@ -133,7 +133,7 @@ class HomeWidget extends StatelessWidget {
             color: Colors.white,
             title: MyTable.getStringByLanguageCode(
                 'Customers', context.read<DataCenter>().languageCode),
-            subtitle: '${context.read<DataCenter>().customerList.length}',
+            subtitle: '${context.watch<DataCenter>().customerList.length}',
             icon: const Icon(
               MyTable.customerIcon,
               size: 50,
@@ -150,7 +150,7 @@ class HomeWidget extends StatelessWidget {
             color: Colors.white,
             title: MyTable.getStringByLanguageCode(
                 'Sales', context.read<DataCenter>().languageCode),
-            subtitle: '${context.read<DataCenter>().saleList.length}',
+            subtitle: '${context.watch<DataCenter>().saleList.length}',
             icon: const Icon(
               MyTable.saleIcon,
               size: 50,
@@ -173,7 +173,7 @@ class HomeWidget extends StatelessWidget {
             color: Colors.white,
             title: MyTable.getStringByLanguageCode(
                 'Suppliers', context.read<DataCenter>().languageCode),
-            subtitle: '${context.read<DataCenter>().supplierList.length}',
+            subtitle: '${context.watch<DataCenter>().supplierList.length}',
             icon: const Icon(
               MyTable.supplierIcon,
               size: 50,
@@ -190,7 +190,7 @@ class HomeWidget extends StatelessWidget {
             color: Colors.white,
             title: MyTable.getStringByLanguageCode(
                 'Commands', context.read<DataCenter>().languageCode),
-            subtitle: '${context.read<DataCenter>().commandList.length}',
+            subtitle: '${context.watch<DataCenter>().commandList.length}',
             icon: const Icon(
               MyTable.commandIcon,
               size: 50,

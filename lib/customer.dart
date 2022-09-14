@@ -341,30 +341,45 @@ class MyCustomerDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
+                subtitle: Text('${customer[MyTable.customerCodeField]}'),
                 title: Text(
-                  '${MyTable.getStringByLanguageCode('Code', context.read<DataCenter>().languageCode)}: ${customer[MyTable.customerCodeField]}',
+                  MyTable.getStringByLanguageCode(
+                      'Code', context.read<DataCenter>().languageCode),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               ListTile(
+                subtitle: Text('${customer[MyTable.customerFirstNameField]}'),
                 title: Text(
-                  '${MyTable.getStringByLanguageCode('First name', context.read<DataCenter>().languageCode)}: ${customer[MyTable.customerFirstNameField]}',
+                  MyTable.getStringByLanguageCode(
+                      'First name', context.read<DataCenter>().languageCode),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               ListTile(
+                subtitle: Text('${customer[MyTable.customerLastNameField]}'),
                 title: Text(
-                  '${MyTable.getStringByLanguageCode('Last name', context.read<DataCenter>().languageCode)}: ${customer[MyTable.customerLastNameField]}',
+                  MyTable.getStringByLanguageCode(
+                      'Last name', context.read<DataCenter>().languageCode),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               if ('${customer[MyTable.customerAddressField]}'.isNotEmpty)
                 ListTile(
+                  subtitle: Text('${customer[MyTable.customerAddressField]}'),
                   title: Text(
-                    '${MyTable.getStringByLanguageCode('Address', context.read<DataCenter>().languageCode)}: ${customer[MyTable.customerAddressField]}',
+                    MyTable.getStringByLanguageCode(
+                        'Address', context.read<DataCenter>().languageCode),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               if ('${customer[MyTable.customerEmailField]}'.isNotEmpty)
                 ListTile(
+                  subtitle: Text('${customer[MyTable.customerEmailField]}'),
                   title: Text(
-                    '${MyTable.getStringByLanguageCode('E-mail', context.read<DataCenter>().languageCode)}: ${customer[MyTable.customerEmailField]}',
+                    MyTable.getStringByLanguageCode(
+                        'E-mail', context.read<DataCenter>().languageCode),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
             ],
@@ -584,7 +599,7 @@ class EditCustomer extends StatelessWidget {
                   contentPadding: EdgeInsets.zero,
                   title: Text(MyTable.getStringByLanguageCode(
                       'Add e-mail field', context.read<DataCenter>().languageCode)),
-                  value: context.watch<DataCenter>().addCustomerEmailField,
+                  value: context.read<DataCenter>().addCustomerEmailField,
                   onChanged: (bool value) =>
                       context.read<DataCenter>().addCustomerEmailField = value,
                 ),

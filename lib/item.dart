@@ -613,10 +613,7 @@ class EditItem extends StatelessWidget {
                       ),
                     ),
                     TextFormField(
-                      //initialValue: item.itemDescription,
-                      controller: TextEditingController(
-                        text: item.itemDescription,
-                      ),
+                      initialValue: item.itemDescription,
                       keyboardType: TextInputType.visiblePassword,
                       onSaved: (newValue) => _itemDescription = newValue,
                       validator: (value) {
@@ -629,10 +626,7 @@ class EditItem extends StatelessWidget {
                       ),
                     ),
                     TextFormField(
-                      //initialValue: item.itemUnit,
-                      controller: TextEditingController(
-                        text: item.itemUnit,
-                      ),
+                      initialValue: item.itemUnit,
                       keyboardType: TextInputType.visiblePassword,
                       onSaved: (newValue) => _itemUnit = newValue,
                       validator: (value) {
@@ -644,10 +638,7 @@ class EditItem extends StatelessWidget {
                       ),
                     ),
                     TextFormField(
-                      //initialValue: item.itemCategory,
-                      controller: TextEditingController(
-                        text: item.itemCategory,
-                      ),
+                      initialValue: item.itemCategory,
                       keyboardType: TextInputType.visiblePassword,
                       onSaved: (newValue) => _itemCategory = newValue,
                       validator: (value) {
@@ -659,10 +650,7 @@ class EditItem extends StatelessWidget {
                       ),
                     ),
                     TextFormField(
-                      //initialValue: item.itemQuality,
-                      controller: TextEditingController(
-                        text: item.itemQuality,
-                      ),
+                      initialValue: item.itemQuality,
                       keyboardType: TextInputType.visiblePassword,
                       onSaved: (newValue) => _itemQuality = newValue,
                       validator: (value) {
@@ -673,154 +661,6 @@ class EditItem extends StatelessWidget {
                             'Quality', context.read<DataCenter>().languageCode),
                       ),
                     ),
-                    /* SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(MyTable.getStringByLanguageCode(
-                          'Add description field',
-                          context.read<DataCenter>().languageCode)),
-                      value: _value,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _value = value;
-                        });
-                      },
-                    ),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(MyTable.getStringByLanguageCode(
-                          'Add unit field', context.read<DataCenter>().languageCode)),
-                      value: _value1,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _value1 = value;
-                        });
-                      },
-                    ),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(MyTable.getStringByLanguageCode(
-                          'Add category field',
-                          context.read<DataCenter>().languageCode)),
-                      value: _value2,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _value2 = value;
-                        });
-                      },
-                    ),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(MyTable.getStringByLanguageCode('Add quality field',
-                          context.read<DataCenter>().languageCode)),
-                      value: _value3,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _value3 = value;
-                        });
-                      },
-                    ),
-
-                    if (context.read<DataCenter>().addItemDescriptionField)
-                  //if ('${item.itemDescription}'.isNotEmpty)
-                  TextFormField(
-                    initialValue: item.itemDescription,
-                    keyboardType: TextInputType.visiblePassword,
-                    onSaved: (newValue) => _itemDescription = newValue,
-                    validator: (value) {
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: MyTable.getStringByLanguageCode(
-                          'Description', context.read<DataCenter>().languageCode),
-                    ),
-                  ),
-                TextFormField(
-                  initialValue: '${item.itemQuantity}',
-                  readOnly: true,
-                  onSaved: (newValue) => _itemQuantity = newValue,
-                  /*validator: (value) {
-                    return null;
-                  },*/
-                  decoration: InputDecoration(
-                    labelText: MyTable.getStringByLanguageCode(
-                        'Quantity', context.read<DataCenter>().languageCode),
-                  ),
-                ),
-                if (context.read<DataCenter>().addItemUnitField)
-                  //if ('${item.itemUnit}'.isNotEmpty)
-                  TextFormField(
-                    initialValue: item.itemUnit,
-                    keyboardType: TextInputType.visiblePassword,
-                    onSaved: (newValue) => _itemUnit = newValue,
-                    validator: (value) {
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: MyTable.getStringByLanguageCode(
-                          'Unit', context.read<DataCenter>().languageCode),
-                    ),
-                  ),
-                if (context.read<DataCenter>().addItemCategoryField)
-                  //if ('${item.itemCategory}'.isNotEmpty)
-                  TextFormField(
-                    initialValue: item.itemCategory,
-                    keyboardType: TextInputType.visiblePassword,
-                    onSaved: (newValue) => _itemCategory = newValue,
-                    validator: (value) {
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: MyTable.getStringByLanguageCode(
-                          'Category', context.read<DataCenter>().languageCode),
-                    ),
-                  ),
-                if (context.read<DataCenter>().addItemQualityField)
-                  //if ('${item.itemQuality}'.isNotEmpty)
-                  TextFormField(
-                    initialValue: item.itemQuality,
-                    keyboardType: TextInputType.visiblePassword,
-                    onSaved: (newValue) => _itemQuality = newValue,
-                    validator: (value) {
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: MyTable.getStringByLanguageCode(
-                          'Quality', context.read<DataCenter>().languageCode),
-                    ),
-                  ),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(MyTable.getStringByLanguageCode('Add description field',
-                      context.read<DataCenter>().languageCode)),
-                  value: context.watch<DataCenter>().addItemDescriptionField,
-                  onChanged: (bool value) => context
-                      .read<DataCenter>()
-                      .addItemDescriptionField = value,
-                ),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(MyTable.getStringByLanguageCode(
-                      'Add quality field', context.read<DataCenter>().languageCode)),
-                  value: context.read<DataCenter>().addItemQualityField,
-                  onChanged: (bool value) =>
-                      context.read<DataCenter>().addItemQualityField = value,
-                ),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(MyTable.getStringByLanguageCode(
-                      'Add unit field', context.read<DataCenter>().languageCode)),
-                  value: context.read<DataCenter>().addItemUnitField,
-                  onChanged: (bool value) =>
-                      context.read<DataCenter>().addItemUnitField = value,
-                ),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(MyTable.getStringByLanguageCode(
-                      'Add category field', context.read<DataCenter>().languageCode)),
-                  value: context.read<DataCenter>().addItemCategoryField,
-                  onChanged: (bool value) =>
-                      context.read<DataCenter>().addItemCategoryField = value,
-                ),*/
                   ],
                 ),
               );
@@ -971,37 +811,55 @@ class MyItemDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
+                subtitle: Text('${item[MyTable.itemCodeField]}'),
                 title: Text(
-                  '${MyTable.getStringByLanguageCode('Code', context.read<DataCenter>().languageCode)}: ${item[MyTable.itemCodeField]}',
+                  MyTable.getStringByLanguageCode(
+                      'Code', context.read<DataCenter>().languageCode),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               if ('${item[MyTable.itemDescriptionField]}'.isNotEmpty)
                 ListTile(
+                  subtitle: Text('${item[MyTable.itemDescriptionField]}'),
                   title: Text(
-                    '${MyTable.getStringByLanguageCode('Description', context.read<DataCenter>().languageCode)}: ${item[MyTable.itemDescriptionField]}',
+                    MyTable.getStringByLanguageCode(
+                        'Description', context.read<DataCenter>().languageCode),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ListTile(
+                subtitle: Text('${item[MyTable.itemQuantityField]}'),
                 title: Text(
-                  '${MyTable.getStringByLanguageCode('Quantity', context.read<DataCenter>().languageCode)}: ${item[MyTable.itemQuantityField]}',
+                  MyTable.getStringByLanguageCode(
+                      'Quantity', context.read<DataCenter>().languageCode),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               if ('${item[MyTable.itemUnitField]}'.isNotEmpty)
                 ListTile(
+                  subtitle: Text('${item[MyTable.itemUnitField]}'),
                   title: Text(
-                    '${MyTable.getStringByLanguageCode('Unit', context.read<DataCenter>().languageCode)}: ${item[MyTable.itemUnitField]}',
+                    MyTable.getStringByLanguageCode(
+                        'Unit', context.read<DataCenter>().languageCode),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               if ('${item[MyTable.itemCategoryField]}'.isNotEmpty)
                 ListTile(
+                  subtitle: Text('${item[MyTable.itemCategoryField]}'),
                   title: Text(
-                    '${MyTable.getStringByLanguageCode('Category', context.read<DataCenter>().languageCode)}: ${item[MyTable.itemCategoryField]}',
+                    MyTable.getStringByLanguageCode(
+                        'Category', context.read<DataCenter>().languageCode),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               if ('${item[MyTable.itemQualityField]}'.isNotEmpty)
                 ListTile(
+                  subtitle: Text('${item[MyTable.itemQualityField]}'),
                   title: Text(
-                    '${MyTable.getStringByLanguageCode('Quality', context.read<DataCenter>().languageCode)}: ${item[MyTable.itemQualityField]}',
+                    MyTable.getStringByLanguageCode(
+                        'Quality', context.read<DataCenter>().languageCode),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
             ],

@@ -499,7 +499,7 @@ class AddSale extends StatelessWidget {
                       MyTable.getStringByLanguageCode('Add customer field',
                           context.read<DataCenter>().languageCode),
                     ),
-                    value: context.watch<DataCenter>().addSaleCustomerCodeField,
+                    value: context.read<DataCenter>().addSaleCustomerCodeField,
                     onChanged: (bool value) => context
                         .read<DataCenter>()
                         .addSaleCustomerCodeField = value,
@@ -619,36 +619,56 @@ class MySaleDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
+                subtitle: Text('${sales[MyTable.saleCodeField]}'),
                 title: Text(
-                  '${MyTable.getStringByLanguageCode('Code', context.read<DataCenter>().languageCode)}: ${sales[MyTable.saleCodeField]}',
+                  MyTable.getStringByLanguageCode(
+                      'Code', context.read<DataCenter>().languageCode),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               ListTile(
+                subtitle: Text('${sales[MyTable.itemCodeField]}'),
                 title: Text(
-                  '${MyTable.getStringByLanguageCode('Item code', context.read<DataCenter>().languageCode)}: ${sales[MyTable.itemCodeField]}',
+                  MyTable.getStringByLanguageCode(
+                      'Item code', context.read<DataCenter>().languageCode),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               if ({sales[MyTable.customerCodeField]}.isNotEmpty &&
                   sales[MyTable.customerCodeField] as String !=
                       MyTable.customerZero)
                 ListTile(
+                  subtitle: Text('${sales[MyTable.customerCodeField]}'),
                   title: Text(
-                    '${MyTable.getStringByLanguageCode('Customer code', context.read<DataCenter>().languageCode)}: ${sales[MyTable.customerCodeField]}',
+                    MyTable.getStringByLanguageCode('Customer code',
+                        context.read<DataCenter>().languageCode),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ListTile(
+                subtitle: Text('${sales[MyTable.itemQuantityField]}'),
                 title: Text(
-                  '${MyTable.getStringByLanguageCode('Quantity', context.read<DataCenter>().languageCode)}: ${sales[MyTable.itemQuantityField]}',
+                  MyTable.getStringByLanguageCode(
+                      'Quantity', context.read<DataCenter>().languageCode),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               ListTile(
+                subtitle: Text('${sales[MyTable.saleCostField]}'),
                 title: Text(
-                  '${MyTable.getStringByLanguageCode('Total cost', context.read<DataCenter>().languageCode)}: ${sales[MyTable.saleCostField]}',
+                  MyTable.getStringByLanguageCode(
+                      'Total cost', context.read<DataCenter>().languageCode),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               ListTile(
+                subtitle: Text(MyTable.formatDateToLanguageCode(
+                    context.read<DataCenter>().languageCode,
+                    sales[MyTable.saleDateField] as String)),
                 title: Text(
-                  '${MyTable.getStringByLanguageCode('Date', context.read<DataCenter>().languageCode)}: ${MyTable.formatDateToLanguageCode(context.read<DataCenter>().languageCode, sales[MyTable.saleDateField] as String)}',
+                  MyTable.getStringByLanguageCode(
+                      'Date', context.read<DataCenter>().languageCode),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             ],

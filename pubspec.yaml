@@ -35,6 +35,9 @@ dependencies:
   intl:
   shared_preferences:
   badges:
+  excel:
+  flutter_slidable:
+  flutter_launcher_icons:
   flutter_localizations:
     sdk: flutter
 

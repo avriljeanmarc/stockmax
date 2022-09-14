@@ -280,19 +280,6 @@ class DataCenter extends ChangeNotifier {
   List<MyItemPriceAtDate> _itemPriceAtDateList = [];
   List<MyCommand> _commandList = [];
   final int lessStockValue = 100;
-  //For settings purpose
-
-  /*bool _addItemDescriptionField = false;
-  bool _addItemQualityField = false;
-  bool _addItemUnitField = false;
-  bool _addItemCategoryField = false;
-
-  bool _addCustomerAddressField = false;
-  bool _addCustomerEmailField = false;
-
-  bool _addSaleCustomerCodeField = false;
-
-  bool _addCommandSupplierCodeField = false;*/
 
   final StockmaxDatabase _database = StockmaxDatabase.instance;
 
@@ -305,67 +292,6 @@ class DataCenter extends ChangeNotifier {
     _languageCode = prefs.getString('languageCode') ?? 'fr';
   }
 
-  /*bool get addCommandSupplierCodeField => _addCommandSupplierCodeField;
-  set addCommandSupplierCodeField(bool value) {
-    _addCommandSupplierCodeField = value;
-    notifyListeners();
-  }
-
-  bool get addCustomerAddressField => _addCustomerAddressField;
-  set addCustomerAddressField(bool value) {
-    _addCustomerAddressField = value;
-    notifyListeners();
-  }
-
-  bool get addCustomerEmailField => _addCustomerEmailField;
-  set addCustomerEmailField(bool value) {
-    _addCustomerEmailField = value;
-    notifyListeners();
-  }
-
-  bool get addItemDescriptionField => _addItemDescriptionField;
-  set addItemDescriptionField(bool value) {
-    _addItemDescriptionField = value;
-    notifyListeners();
-  }
-
-  bool get addItemQualityField => _addItemQualityField;
-  set addItemQualityField(bool value) {
-    _addItemQualityField = value;
-    notifyListeners();
-  }
-
-  bool get addItemUnitField => _addItemUnitField;
-  set addItemUnitField(bool value) {
-    _addItemUnitField = value;
-    notifyListeners();
-  }
-
-  bool get addItemCategoryField => _addItemCategoryField;
-  set addItemCategoryField(bool value) {
-    _addItemCategoryField = value;
-    notifyListeners();
-  }
-
-  bool get addSaleCustomerCodeField => _addSaleCustomerCodeField;
-  set addSaleCustomerCodeField(bool value) {
-    _addSaleCustomerCodeField = value;
-    notifyListeners();
-  }
-
-  void resetAllNotDefaultFields() {
-    _addItemDescriptionField = false;
-    _addItemQualityField = false;
-    _addItemUnitField = false;
-    _addItemCategoryField = false;
-
-    _addCustomerAddressField = false;
-    _addCustomerEmailField = false;
-
-    _addSaleCustomerCodeField = false;
-    _addCommandSupplierCodeField = false;
-  }
-*/
   MyItem? getItemByCode(String itemCode) {
     MyItem? item;
     for (MyItem element in _itemList) {
@@ -412,16 +338,6 @@ class DataCenter extends ChangeNotifier {
     //await _database.listTables();
     notifyListeners();
   }
-
-  /*void _setUserSettings(String userSetting, value) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool(userSetting, value);
-  }
-
-  void _removeUserSettings(String userSetting) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove(userSetting);
-  }*/
 
   void deleteDatabase() async {
     await _database.deleteAllData();
@@ -489,6 +405,13 @@ class DataCenter extends ChangeNotifier {
     await _database.updateCustomer(item, _customerList[index]);
     _customerList[index] = item;
     _saleList = await _database.readAllSales();
+    notifyListeners();
+  }
+
+  void updateSupplier(int index, MySupplier supplier) async {
+    await _database.updateSupplier(supplier, _supplierList[index]);
+    _supplierList[index] = supplier;
+    _commandList = await _database.readAllCommands();
     notifyListeners();
   }
 

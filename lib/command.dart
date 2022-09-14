@@ -488,31 +488,48 @@ class MyCommandDetails extends StatelessWidget {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               ListTile(
+                subtitle: Text('${commands[MyTable.commandCodeField]}'),
                 title: Text(
-                  '${MyTable.getStringByLanguageCode('Code', context.read<DataCenter>().languageCode)}: ${commands[MyTable.commandCodeField]}',
+                  MyTable.getStringByLanguageCode(
+                      'Code', context.read<DataCenter>().languageCode),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               ListTile(
+                subtitle: Text('${commands[MyTable.itemCodeField]}'),
                 title: Text(
-                  '${MyTable.getStringByLanguageCode('Item code', context.read<DataCenter>().languageCode)}: ${commands[MyTable.itemCodeField]}',
+                  MyTable.getStringByLanguageCode(
+                      'Item code', context.read<DataCenter>().languageCode),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               ListTile(
+                subtitle: Text('${commands[MyTable.itemQuantityField]}'),
                 title: Text(
-                  '${MyTable.getStringByLanguageCode('Quantity', context.read<DataCenter>().languageCode)}: ${commands[MyTable.itemQuantityField]}',
+                  MyTable.getStringByLanguageCode(
+                      'Quantity', context.read<DataCenter>().languageCode),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               if ('${commands[MyTable.supplierCodeField]}'.isNotEmpty &&
                   commands[MyTable.supplierCodeField] as String !=
                       MyTable.supplierZero)
                 ListTile(
+                  subtitle: Text('${commands[MyTable.supplierCodeField]}'),
                   title: Text(
-                    '${MyTable.getStringByLanguageCode('Supplier code', context.read<DataCenter>().languageCode)}: ${commands[MyTable.supplierCodeField]}',
+                    MyTable.getStringByLanguageCode('Supplier code',
+                        context.read<DataCenter>().languageCode),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ListTile(
+                subtitle: Text(MyTable.formatDateToLanguageCode(
+                    context.read<DataCenter>().languageCode,
+                    commands[MyTable.commandDateField] as String)),
                 title: Text(
-                  '${MyTable.getStringByLanguageCode('Date', context.read<DataCenter>().languageCode)}: ${MyTable.formatDateToLanguageCode(context.read<DataCenter>().languageCode, commands[MyTable.commandDateField] as String)}',
+                  MyTable.getStringByLanguageCode(
+                      'Date', context.read<DataCenter>().languageCode),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             ]),

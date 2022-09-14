@@ -420,7 +420,7 @@ class MyTable {
         return _translatedString;
       }
     }
-    if (str == 'ener code') {
+    if (str == 'User code') {
       if (languageCode == 'fr') {
         _translatedString = 'Code utilisateur';
         return _translatedString;
@@ -474,7 +474,7 @@ class MyTable {
         return _translatedString;
       }
     }
-    if (str == 'customer added') {
+    if (str == 'Customer added') {
       if (languageCode == 'fr') {
         _translatedString = 'Client ajout\u00E9';
         return _translatedString;
@@ -493,14 +493,14 @@ class MyTable {
       }
     }
 
-    if (str == 'Centomize items data') {
+    if (str == 'Customize items data') {
       if (languageCode == 'fr') {
         _translatedString = 'Personnaliser les donn\u00E9es des articles';
         return _translatedString;
       }
     }
 
-    if (str == 'Centomize customers data') {
+    if (str == 'Customize customers data') {
       if (languageCode == 'fr') {
         _translatedString = 'Personnaliser les donn\u00E9es des clients';
         return _translatedString;
@@ -514,7 +514,7 @@ class MyTable {
       }
     }
 
-    if (str == 'customers data') {
+    if (str == 'Customers data') {
       if (languageCode == 'fr') {
         _translatedString = 'Donn\u00E9es des clients';
         return _translatedString;
@@ -600,7 +600,7 @@ class MyTable {
 
     if (str == 'Are you sure you want to delete') {
       if (languageCode == 'fr') {
-        _translatedString = 'Etes-voen s\u00FBr(e) de vouloir supprimer';
+        _translatedString = 'Etes-vous s\u00FBr(e) de vouloir supprimer';
         return _translatedString;
       }
     }
@@ -619,14 +619,14 @@ class MyTable {
       }
     }
 
-    if (str == 'Centomize sales data') {
+    if (str == 'Customize sales data') {
       if (languageCode == 'fr') {
         _translatedString = 'Personnaliser les donn\u00E9es des ventes';
         return _translatedString;
       }
     }
 
-    if (str == 'customer edited') {
+    if (str == 'Customer edited') {
       if (languageCode == 'fr') {
         _translatedString = 'Client modifi\u00E9';
         return _translatedString;
@@ -818,6 +818,13 @@ class MyTable {
     if (str == 'Prices history') {
       if (languageCode == 'fr') {
         _translatedString = 'Historicit\u00E9 des prix';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'Supplier edited') {
+      if (languageCode == 'fr') {
+        _translatedString = 'Fournisseur modifi\u00E9';
         return _translatedString;
       }
     }

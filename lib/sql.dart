@@ -249,6 +249,17 @@ class StockmaxDatabase {
     );
   }
 
+  Future<void> updateSupplier(
+      MySupplier supplier, MySupplier oldSupplier) async {
+    final db = await instance.database;
+    db.update(
+      MyTable.supplier,
+      supplier.toJson(),
+      where: '${MyTable.supplierCodeField} = ?',
+      whereArgs: [oldSupplier.supplierCode],
+    );
+  }
+
   Future<void> delete(String tableName, String rowName, String rowId) async {
     final db = await instance.database;
     db.delete(
