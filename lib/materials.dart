@@ -30,7 +30,7 @@ class MyIcon extends StatelessWidget {
   }
 }
 
-class MyCard extends StatelessWidget {
+/*class MyCard extends StatelessWidget {
   final String title, subtitle;
   const MyCard({
     Key? key,
@@ -135,7 +135,7 @@ class MyBottomNavigationBar extends StatelessWidget {
     );
   }
 }
-
+*/
 class MyScaffold extends StatelessWidget {
   final Widget child;
   final Widget appBarTitle;
@@ -143,7 +143,7 @@ class MyScaffold extends StatelessWidget {
   final bool showFloatingButton;
   final bool showActionsButton;
   final MyDrawer? drawer;
-  final MyBottomNavigationBar? bottomNavigationBar;
+  //final MyBottomNavigationBar? bottomNavigationBar;
   final List<Widget>? actions;
   const MyScaffold({
     Key? key,
@@ -153,14 +153,14 @@ class MyScaffold extends StatelessWidget {
     this.showFloatingButton = true,
     this.showActionsButton = false,
     this.drawer,
-    this.bottomNavigationBar,
+    //this.bottomNavigationBar,
     this.actions,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: bottomNavigationBar,
+      //bottomNavigationBar: bottomNavigationBar,
       drawer: drawer,
       appBar: AppBar(
         actions: showActionsButton ? actions : null,
@@ -340,6 +340,25 @@ class MyDrawer extends StatelessWidget {
             thickness: 3,
           ),
           ListTile(
+            trailing: const Icon(
+              Icons.import_export,
+            ),
+            title: Text(MyTable.getStringByLanguageCode(
+                'Import excel sheet', context.read<DataCenter>().languageCode)),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ImportExcelSheet(),
+                ),
+              );
+            },
+          ),
+          const Divider(
+            thickness: 3,
+          ),
+          ListTile(
             title: Text(context.read<DataCenter>().languageCode == 'en'
                 ? MyTable.getStringByLanguageCode('French', 'fr')
                 : MyTable.getStringByLanguageCode('English', 'en')),
@@ -354,6 +373,9 @@ class MyDrawer extends StatelessWidget {
               }
               Navigator.pop(context);
             },
+          ),
+          const Divider(
+            thickness: 3,
           ),
         ],
       ),
