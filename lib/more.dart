@@ -1,4 +1,9 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:excel/excel.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'model.dart';
 import 'package:provider/provider.dart';
 import 'materials.dart';
@@ -15,7 +20,7 @@ class ItemPricesHistory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<MyItemPriceAtDate> pricesHistory =
-        context.read<DataCenter>().itemPriceAtDateList;
+        context.watch<DataCenter>().itemPriceAtDateList;
 
     return MyScaffold(
       showFloatingButton: false,
@@ -37,60 +42,79 @@ class ItemPricesHistory extends StatelessWidget {
                 )
               : ListView.builder(
                   itemCount: pricesHistory.length,
-                  itemBuilder: (context, index) => ListTile(
-                    onLongPress: () {
-                      Future.delayed(
-                          const Duration(seconds: 0),
-                          () => {
-                                showDialog<void>(
-                                  context: context,
-                                  barrierDismissible:
-                                      false, // user must tap button!
-                                  builder: (context) => AlertDialog(
-                                    title: Column(children: [
-                                      Text(
-                                        MyTable.getStringByLanguageCode(
-                                            'Are you sure you want to delete',
-                                            context
-                                                .read<DataCenter>()
-                                                .languageCode),
-                                      ),
-                                      Text(
-                                        '${pricesHistory[index].itemCode!} - ${MyTable.formatDateToLanguageCode(context.read<DataCenter>().languageCode, pricesHistory[index].atDate!)} - ${pricesHistory[index].itemPrice}',
-                                        style: const TextStyle(
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    ]),
-                                    actions: [
-                                      TextButton(
-                                        child: const Text('OK'),
-                                        onPressed: () {
-                                          context.read<DataCenter>().deleteRow(
-                                                MyTable.item,
-                                                MyTable.itemCodeField,
-                                                pricesHistory[index].itemCode!,
-                                              );
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: const Text('CANCEL'),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              });
-                    },
-                    title: Text(pricesHistory[index].itemCode!),
-                    trailing: Text('${pricesHistory[index].itemPrice!}'),
-                    subtitle: Text(MyTable.formatDateToLanguageCode(
-                        context.read<DataCenter>().languageCode,
-                        pricesHistory[index].atDate!)),
-                  ),
+                  itemBuilder: (context, index) => Slidable(
+                      startActionPane: ActionPane(
+                        motion: const StretchMotion(),
+                        children: [
+                          SlidableAction(
+                            onPressed: ((context) {
+                              Future.delayed(
+                                  const Duration(seconds: 0),
+                                  () => {
+                                        showDialog<void>(
+                                          context: context,
+                                          barrierDismissible:
+                                              false, // user must tap button!
+                                          builder: (context) => AlertDialog(
+                                            title: Column(children: [
+                                              Text(
+                                                MyTable.getStringByLanguageCode(
+                                                    'Are you sure you want to delete',
+                                                    context
+                                                        .read<DataCenter>()
+                                                        .languageCode),
+                                              ),
+                                              /*Text(
+                                                '${pricesHistory[index].itemCode!} - ${MyTable.formatDateToLanguageCode(context.read<DataCenter>().languageCode, pricesHistory[index].atDate!)} - ${pricesHistory[index].itemPrice}',
+                                                style: const TextStyle(
+                                                  color: Colors.red,
+                                                ),
+                                              ),*/
+                                            ]),
+                                            actions: [
+                                              TextButton(
+                                                child: const Text('OK'),
+                                                onPressed: () {
+                                                  context
+                                                      .read<DataCenter>()
+                                                      .deleteItemPriceAtDate(
+                                                        pricesHistory[index]
+                                                            .itemCode!,
+                                                        pricesHistory[index]
+                                                            .atDate!,
+                                                      );
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: const Text('CANCEL'),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      });
+                            }),
+                            backgroundColor: Colors.red,
+                            icon: Icons.delete,
+                          ),
+                          SlidableAction(
+                            onPressed: ((context) {}),
+                            //backgroundColor: Colors.white,
+
+                            icon: Icons.close,
+                          ),
+                        ],
+                      ),
+                      child: ListTile(
+                        title: Text(pricesHistory[index].itemCode!),
+                        trailing: Text('${pricesHistory[index].itemPrice!}'),
+                        subtitle: Text(MyTable.formatDateToLanguageCode(
+                            context.read<DataCenter>().languageCode,
+                            pricesHistory[index].atDate!)),
+                      )),
                 ),
         ),
       ),
@@ -295,5 +319,89 @@ class Log extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class ImportExcelSheet extends StatelessWidget {
+  const ImportExcelSheet({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    List<String> myList = MyTable.menuList;
+    return MyScaffold(
+      showFloatingButton: false,
+      appBarTitle: Text(
+        MyTable.getStringByLanguageCode(
+            'Import excel sheet', context.read<DataCenter>().languageCode),
+      ),
+      child: Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(
+            vertical: 10,
+            horizontal: 10,
+          ),
+          child: ListView.builder(
+            itemCount: myList.length,
+            itemBuilder: (context, index) => ListTile(
+              onTap: () => convert(index, context),
+              /*onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MySupplierDetails(
+                    index: index,
+                  ),
+                ),
+              ),*/
+              title: Text(MyTable.getStringByLanguageCode(
+                  myList[index], context.read<DataCenter>().languageCode)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void convert(int index, BuildContext context) async {
+    FilePickerResult? file = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['xlsx', 'csv', 'xls'],
+    );
+
+    if (file != null && file.files.isNotEmpty) {
+      Uint8List bytes = File(file.files.first.path!).readAsBytesSync();
+      Excel excel = Excel.decodeBytes(bytes);
+      List<Map<String, Object?>> excelSheet = [];
+      List<String> fieldsName = [];
+
+      int i = 0;
+      if (index == 0) {
+        fieldsName.addAll([
+          MyTable.itemCodeField,
+          MyTable.itemQuantityField,
+          MyTable.itemDescriptionField,
+          MyTable.itemUnitField,
+          MyTable.itemCategoryField,
+          MyTable.itemQualityField
+        ]);
+        for (var sheetName in excel.tables.keys) {
+          for (var row in excel.tables[sheetName]?.rows ?? []) {
+            i = 0;
+            Map<String, Object?> json = {};
+
+            for (var data in row) {
+              json.addAll({fieldsName[i]: data?.value ?? ''});
+              i++;
+            }
+
+            excelSheet.add(json);
+          }
+
+          for (var json in excelSheet) {
+            context.read<DataCenter>().insertItem(MyItem.fromJson(json));
+          }
+        }
+      }
+
+      if (index == 1) {}
+    }
   }
 }

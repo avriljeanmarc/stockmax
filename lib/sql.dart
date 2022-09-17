@@ -269,6 +269,15 @@ class StockmaxDatabase {
     );
   }
 
+  Future<void> deleteItemPriceAtDate(String itemCode, String atDate) async {
+    final db = await instance.database;
+    db.delete(
+      MyTable.itemPriceAtDate,
+      where: '${MyTable.itemCodeField} = ? AND ${MyTable.atDateField} = ?',
+      whereArgs: [itemCode, atDate],
+    );
+  }
+
   Future close() async {
     final db = await instance.database;
     db.close();

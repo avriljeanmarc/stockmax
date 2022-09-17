@@ -206,15 +206,7 @@ class MySupplierDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, Object?> supplier = {};
-
-    if (index >= context.read<DataCenter>().supplierList.length) {
-      supplier = context.read<DataCenter>().supplierList[index - 1].toJson();
-    } else {
-      supplier = context.read<DataCenter>().supplierList[index].toJson();
-    }
-
-    String supplierCode = supplier[MyTable.supplierCodeField] as String;
+    MySupplier supplier = context.read<DataCenter>().supplierList[index];
 
     return MyScaffold(
       showActionsButton: true,
@@ -268,7 +260,7 @@ class MySupplierDetails extends StatelessWidget {
                                       context.read<DataCenter>().languageCode),
                                 ),
                                 Text(
-                                  supplierCode,
+                                  supplier.supplierCode!,
                                   style: const TextStyle(
                                     color: Colors.red,
                                   ),
@@ -281,7 +273,7 @@ class MySupplierDetails extends StatelessWidget {
                                     context.read<DataCenter>().deleteRow(
                                           MyTable.supplier,
                                           MyTable.supplierCodeField,
-                                          supplierCode,
+                                          supplier.supplierCode!,
                                         );
                                     Navigator.of(context).pop();
                                   },
@@ -308,7 +300,7 @@ class MySupplierDetails extends StatelessWidget {
       ],
       showFloatingButton: false,
       appBarTitle: Text(
-        supplierCode,
+        supplier.supplierCode!,
       ),
       child: Padding(
         padding: const EdgeInsets.only(
@@ -319,34 +311,34 @@ class MySupplierDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                subtitle: Text('${supplier[MyTable.supplierCodeField]}'),
+                subtitle: Text(supplier.supplierCode!),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'Code', context.read<DataCenter>().languageCode),
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              if ('${supplier[MyTable.supplierNameField]}'.isNotEmpty)
+              if (supplier.supplierName!.isNotEmpty)
                 ListTile(
-                  subtitle: Text('${supplier[MyTable.supplierNameField]}'),
+                  subtitle: Text(supplier.supplierName!),
                   title: Text(
                     MyTable.getStringByLanguageCode('Supplier name',
                         context.read<DataCenter>().languageCode),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
-              if ('${supplier[MyTable.supplierAddressField]}'.isNotEmpty)
+              if (supplier.supplierAddress!.isNotEmpty)
                 ListTile(
-                  subtitle: Text('${supplier[MyTable.supplierAddressField]}'),
+                  subtitle: Text(supplier.supplierAddress!),
                   title: Text(
                     MyTable.getStringByLanguageCode('Supplier address',
                         context.read<DataCenter>().languageCode),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
-              if ('${supplier[MyTable.supplierEmailField]}'.isNotEmpty)
+              if (supplier.supplierEmail!.isNotEmpty)
                 ListTile(
-                  subtitle: Text('${supplier[MyTable.supplierEmailField]}'),
+                  subtitle: Text(supplier.supplierEmail!),
                   title: Text(
                     MyTable.getStringByLanguageCode('Supplier e-mail',
                         context.read<DataCenter>().languageCode),

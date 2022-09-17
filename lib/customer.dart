@@ -240,14 +240,7 @@ class MyCustomerDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, Object?> customer = {};
-    if (index >= context.read<DataCenter>().customerList.length) {
-      customer = context.read<DataCenter>().customerList[index - 1].toJson();
-    } else {
-      customer = context.read<DataCenter>().customerList[index].toJson();
-    }
-
-    String customerCode = customer[MyTable.customerCodeField] as String;
+    MyCustomer customer = context.read<DataCenter>().customerList[index];
 
     return MyScaffold(
       showActionsButton: true,
@@ -294,7 +287,7 @@ class MyCustomerDetails extends StatelessWidget {
                             barrierDismissible: false, // user must tap button!
                             builder: (context) => AlertDialog(
                               title: Text(
-                                '${MyTable.getStringByLanguageCode('Are you sure you want to delete', context.read<DataCenter>().languageCode)} $customerCode',
+                                '${MyTable.getStringByLanguageCode('Are you sure you want to delete', context.read<DataCenter>().languageCode)} ${customer.customerCode}',
                               ),
                               actions: [
                                 TextButton(
@@ -303,7 +296,7 @@ class MyCustomerDetails extends StatelessWidget {
                                     context.read<DataCenter>().deleteRow(
                                           MyTable.customer,
                                           MyTable.customerCodeField,
-                                          customerCode,
+                                          customer.customerCode!,
                                         );
                                     Navigator.of(context).pop();
                                   },
@@ -330,7 +323,7 @@ class MyCustomerDetails extends StatelessWidget {
       ],
       showFloatingButton: false,
       appBarTitle: Text(
-        customerCode,
+        customer.customerCode!,
       ),
       child: Padding(
         padding: const EdgeInsets.only(
@@ -341,7 +334,7 @@ class MyCustomerDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                subtitle: Text('${customer[MyTable.customerCodeField]}'),
+                subtitle: Text(customer.customerCode!),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'Code', context.read<DataCenter>().languageCode),
@@ -349,7 +342,7 @@ class MyCustomerDetails extends StatelessWidget {
                 ),
               ),
               ListTile(
-                subtitle: Text('${customer[MyTable.customerFirstNameField]}'),
+                subtitle: Text(customer.customerFirstName!),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'First name', context.read<DataCenter>().languageCode),
@@ -357,25 +350,25 @@ class MyCustomerDetails extends StatelessWidget {
                 ),
               ),
               ListTile(
-                subtitle: Text('${customer[MyTable.customerLastNameField]}'),
+                subtitle: Text(customer.customerLastName!),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'Last name', context.read<DataCenter>().languageCode),
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              if ('${customer[MyTable.customerAddressField]}'.isNotEmpty)
+              if (customer.customerAddress!.isNotEmpty)
                 ListTile(
-                  subtitle: Text('${customer[MyTable.customerAddressField]}'),
+                  subtitle: Text(customer.customerAddress!),
                   title: Text(
                     MyTable.getStringByLanguageCode(
                         'Address', context.read<DataCenter>().languageCode),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
-              if ('${customer[MyTable.customerEmailField]}'.isNotEmpty)
+              if (customer.customerEmail!.isNotEmpty)
                 ListTile(
-                  subtitle: Text('${customer[MyTable.customerEmailField]}'),
+                  subtitle: Text(customer.customerEmail!),
                   title: Text(
                     MyTable.getStringByLanguageCode(
                         'E-mail', context.read<DataCenter>().languageCode),

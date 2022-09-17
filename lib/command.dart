@@ -359,15 +359,7 @@ class MyCommandDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, Object?> commands = {};
-
-    if (index >= context.read<DataCenter>().commandList.length) {
-      commands = context.read<DataCenter>().commandList[index - 1].toJson();
-    } else {
-      commands = context.read<DataCenter>().commandList[index].toJson();
-    }
-
-    String commandCode = commands[MyTable.commandCodeField] as String;
+    MyCommand command = context.read<DataCenter>().commandList[index];
     return MyScaffold(
         showActionsButton: true,
         showFloatingButton: false,
@@ -424,7 +416,7 @@ class MyCommandDetails extends StatelessWidget {
                                             .languageCode),
                                   ),
                                   Text(
-                                    commandCode,
+                                    command.commandCode!,
                                     style: const TextStyle(
                                       color: Colors.red,
                                     ),
@@ -437,25 +429,22 @@ class MyCommandDetails extends StatelessWidget {
                                       context.read<DataCenter>().deleteRow(
                                             MyTable.command,
                                             MyTable.commandCodeField,
-                                            commandCode,
+                                            command.commandCode!,
                                           );
-                                      String itemCode =
-                                          commands[MyTable.itemCodeField]
-                                              as String;
+
                                       MyItem? item = context
                                           .read<DataCenter>()
-                                          .getItemByCode(itemCode);
+                                          .getItemByCode(command.itemCode!);
 
                                       item = MyItem.copy(MyItem(
-                                        itemCode: itemCode,
+                                        itemCode: command.itemCode!,
                                         itemQuantity: item!.itemQuantity! -
-                                            (commands[MyTable
-                                                .itemQuantityField]! as double),
+                                            command.itemQuantity!,
                                       ));
 
-                                      context
-                                          .read<DataCenter>()
-                                          .updateItem(item, itemCode: itemCode);
+                                      context.read<DataCenter>().updateItem(
+                                          item,
+                                          itemCode: command.itemCode!);
                                       Navigator.of(context).pop();
                                     },
                                   ),
@@ -479,7 +468,7 @@ class MyCommandDetails extends StatelessWidget {
             ],
           ),
         ],
-        appBarTitle: Text(commandCode),
+        appBarTitle: Text(command.commandCode!),
         child: Padding(
           padding: const EdgeInsets.only(
             top: 20,
@@ -488,7 +477,7 @@ class MyCommandDetails extends StatelessWidget {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               ListTile(
-                subtitle: Text('${commands[MyTable.commandCodeField]}'),
+                subtitle: Text(command.commandCode!),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'Code', context.read<DataCenter>().languageCode),
@@ -496,7 +485,7 @@ class MyCommandDetails extends StatelessWidget {
                 ),
               ),
               ListTile(
-                subtitle: Text('${commands[MyTable.itemCodeField]}'),
+                subtitle: Text(command.itemCode!),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'Item code', context.read<DataCenter>().languageCode),
@@ -504,18 +493,17 @@ class MyCommandDetails extends StatelessWidget {
                 ),
               ),
               ListTile(
-                subtitle: Text('${commands[MyTable.itemQuantityField]}'),
+                subtitle: Text(command.itemQuantity!.toString()),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'Quantity', context.read<DataCenter>().languageCode),
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              if ('${commands[MyTable.supplierCodeField]}'.isNotEmpty &&
-                  commands[MyTable.supplierCodeField] as String !=
-                      MyTable.supplierZero)
+              if (command.supplierCode!.isNotEmpty &&
+                  command.supplierCode != MyTable.supplierZero)
                 ListTile(
-                  subtitle: Text('${commands[MyTable.supplierCodeField]}'),
+                  subtitle: Text(command.supplierCode!),
                   title: Text(
                     MyTable.getStringByLanguageCode('Supplier code',
                         context.read<DataCenter>().languageCode),
@@ -525,7 +513,7 @@ class MyCommandDetails extends StatelessWidget {
               ListTile(
                 subtitle: Text(MyTable.formatDateToLanguageCode(
                     context.read<DataCenter>().languageCode,
-                    commands[MyTable.commandDateField] as String)),
+                    command.commandDate!)),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'Date', context.read<DataCenter>().languageCode),

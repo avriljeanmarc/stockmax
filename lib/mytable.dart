@@ -242,6 +242,12 @@ class MyTable {
   static const enDateFormat = 'MM/dd/yyyy';
   static const saveDateFormat = 'yyyy-MM-dd';
 
+  static const List<String> menuList = [
+    'Items',
+    'Customers',
+    'Suppliers',
+  ];
+
   static const IconData itemIcon = Icons.sell;
   static const IconData customerIcon = Icons.contacts;
   static const IconData saleIcon = Icons.shopping_cart;
@@ -855,6 +861,13 @@ class MyTable {
     if (str == 'Supplier edited') {
       if (languageCode == 'fr') {
         _translatedString = 'Fournisseur modifi\u00E9';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'Import excel sheet') {
+      if (languageCode == 'fr') {
+        _translatedString = 'Importer une feuille excel';
         return _translatedString;
       }
     }

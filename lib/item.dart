@@ -678,15 +678,7 @@ class MyItemDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, Object?> item = {};
-
-    if (index >= context.read<DataCenter>().itemList.length) {
-      item = context.read<DataCenter>().itemList[index - 1].toJson();
-    } else {
-      item = context.read<DataCenter>().itemList[index].toJson();
-    }
-
-    String itemCode = item[MyTable.itemCodeField] as String;
+    MyItem item = context.read<DataCenter>().itemList[index];
 
     return MyScaffold(
       showActionsButton: true,
@@ -716,7 +708,7 @@ class MyItemDetails extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => EditItemPrice(
-                              itemCode: itemCode,
+                              itemCode: item.itemCode!,
                             ),
                           ),
                         ));
@@ -760,7 +752,7 @@ class MyItemDetails extends StatelessWidget {
                                       context.read<DataCenter>().languageCode),
                                 ),
                                 Text(
-                                  itemCode,
+                                  item.itemCode!,
                                   style: const TextStyle(
                                     color: Colors.red,
                                   ),
@@ -773,7 +765,7 @@ class MyItemDetails extends StatelessWidget {
                                     context.read<DataCenter>().deleteRow(
                                           MyTable.item,
                                           MyTable.itemCodeField,
-                                          itemCode,
+                                          item.itemCode!,
                                         );
                                     Navigator.of(context).pop();
                                   },
@@ -800,7 +792,7 @@ class MyItemDetails extends StatelessWidget {
       ],
       showFloatingButton: false,
       appBarTitle: Text(
-        itemCode,
+        item.itemCode!,
       ),
       child: Padding(
         padding: const EdgeInsets.only(
@@ -811,51 +803,51 @@ class MyItemDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                subtitle: Text('${item[MyTable.itemCodeField]}'),
+                subtitle: Text(item.itemCode!),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'Code', context.read<DataCenter>().languageCode),
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              if ('${item[MyTable.itemDescriptionField]}'.isNotEmpty)
-                ListTile(
-                  subtitle: Text('${item[MyTable.itemDescriptionField]}'),
-                  title: Text(
-                    MyTable.getStringByLanguageCode(
-                        'Description', context.read<DataCenter>().languageCode),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
               ListTile(
-                subtitle: Text('${item[MyTable.itemQuantityField]}'),
+                subtitle: Text(item.itemQuantity!.toString()),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'Quantity', context.read<DataCenter>().languageCode),
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              if ('${item[MyTable.itemUnitField]}'.isNotEmpty)
+              if (item.itemDescription!.isNotEmpty)
                 ListTile(
-                  subtitle: Text('${item[MyTable.itemUnitField]}'),
+                  subtitle: Text(item.itemDescription!),
+                  title: Text(
+                    MyTable.getStringByLanguageCode(
+                        'Description', context.read<DataCenter>().languageCode),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              if (item.itemUnit!.isNotEmpty)
+                ListTile(
+                  subtitle: Text(item.itemUnit!),
                   title: Text(
                     MyTable.getStringByLanguageCode(
                         'Unit', context.read<DataCenter>().languageCode),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
-              if ('${item[MyTable.itemCategoryField]}'.isNotEmpty)
+              if (item.itemCategory!.isNotEmpty)
                 ListTile(
-                  subtitle: Text('${item[MyTable.itemCategoryField]}'),
+                  subtitle: Text(item.itemCategory!),
                   title: Text(
                     MyTable.getStringByLanguageCode(
                         'Category', context.read<DataCenter>().languageCode),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
-              if ('${item[MyTable.itemQualityField]}'.isNotEmpty)
+              if (item.itemQuality!.isNotEmpty)
                 ListTile(
-                  subtitle: Text('${item[MyTable.itemQualityField]}'),
+                  subtitle: Text(item.itemQuality!),
                   title: Text(
                     MyTable.getStringByLanguageCode(
                         'Quality', context.read<DataCenter>().languageCode),

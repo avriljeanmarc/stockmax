@@ -341,7 +341,8 @@ class DataCenter extends ChangeNotifier {
 
   void deleteDatabase() async {
     await _database.deleteAllData();
-    await GenerateData().generate(_database);
+    _database.close();
+    //await GenerateData().generate(_database);
     _init();
   }
 
@@ -464,7 +465,18 @@ class DataCenter extends ChangeNotifier {
     }
 
     notifyListeners();
-    return;
+  }
+
+  void deleteItemPriceAtDate(String itemCode, String atDate) async {
+    await _database.deleteItemPriceAtDate(itemCode, atDate);
+    for (MyItemPriceAtDate price in _itemPriceAtDateList) {
+      if (price.itemCode == itemCode && price.atDate == atDate) {
+        _itemPriceAtDateList.remove(price);
+        break;
+      }
+    }
+
+    notifyListeners();
   }
 
   List<MyCommand> get commandList => _commandList;

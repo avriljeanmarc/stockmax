@@ -520,14 +520,7 @@ class MySaleDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, Object?> sales = {};
-    if (index >= context.read<DataCenter>().saleList.length) {
-      sales = context.read<DataCenter>().saleList[index - 1].toJson();
-    } else {
-      sales = context.read<DataCenter>().saleList[index].toJson();
-    }
-
-    String saleCode = '${sales[MyTable.saleCodeField]}';
+    MySale sale = context.read<DataCenter>().saleList[index];
 
     return MyScaffold(
       showActionsButton: true,
@@ -555,7 +548,7 @@ class MySaleDetails extends StatelessWidget {
                             barrierDismissible: false, // user must tap button!
                             builder: (context) => AlertDialog(
                               title: Text(
-                                '${MyTable.getStringByLanguageCode('Are you sure you want to delete', context.read<DataCenter>().languageCode)} $saleCode',
+                                '${MyTable.getStringByLanguageCode('Are you sure you want to delete', context.read<DataCenter>().languageCode)} ${sale.saleCode!}',
                               ),
                               actions: [
                                 TextButton(
@@ -564,25 +557,22 @@ class MySaleDetails extends StatelessWidget {
                                     context.read<DataCenter>().deleteRow(
                                           MyTable.sale,
                                           MyTable.saleCodeField,
-                                          saleCode,
+                                          sale.saleCode!,
                                         );
 
-                                    String itemCode =
-                                        sales[MyTable.itemCodeField] as String;
+                                    sale.itemCode!;
                                     MyItem? item = context
                                         .read<DataCenter>()
-                                        .getItemByCode(itemCode);
+                                        .getItemByCode(sale.itemCode!);
 
                                     item = MyItem.copy(MyItem(
-                                      itemCode: itemCode,
+                                      itemCode: sale.itemCode!,
                                       itemQuantity: item!.itemQuantity! +
-                                          (sales[MyTable.itemQuantityField]!
-                                              as double),
+                                          sale.itemQuantity!,
                                     ));
 
-                                    context
-                                        .read<DataCenter>()
-                                        .updateItem(item, itemCode: itemCode);
+                                    context.read<DataCenter>().updateItem(item,
+                                        itemCode: sale.itemCode!);
                                     Navigator.of(context).pop();
                                   },
                                 ),
@@ -608,7 +598,7 @@ class MySaleDetails extends StatelessWidget {
       ],
       showFloatingButton: false,
       appBarTitle: Text(
-        saleCode,
+        sale.saleCode!,
       ),
       child: Padding(
         padding: const EdgeInsets.only(
@@ -619,7 +609,7 @@ class MySaleDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                subtitle: Text('${sales[MyTable.saleCodeField]}'),
+                subtitle: Text(sale.saleCode!),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'Code', context.read<DataCenter>().languageCode),
@@ -627,18 +617,17 @@ class MySaleDetails extends StatelessWidget {
                 ),
               ),
               ListTile(
-                subtitle: Text('${sales[MyTable.itemCodeField]}'),
+                subtitle: Text(sale.itemCode!),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'Item code', context.read<DataCenter>().languageCode),
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              if ({sales[MyTable.customerCodeField]}.isNotEmpty &&
-                  sales[MyTable.customerCodeField] as String !=
-                      MyTable.customerZero)
+              if (sale.customerCode!.isNotEmpty &&
+                  sale.customerCode != MyTable.customerZero)
                 ListTile(
-                  subtitle: Text('${sales[MyTable.customerCodeField]}'),
+                  subtitle: Text(sale.customerCode!),
                   title: Text(
                     MyTable.getStringByLanguageCode('Customer code',
                         context.read<DataCenter>().languageCode),
@@ -646,7 +635,7 @@ class MySaleDetails extends StatelessWidget {
                   ),
                 ),
               ListTile(
-                subtitle: Text('${sales[MyTable.itemQuantityField]}'),
+                subtitle: Text(sale.itemQuantity!.toString()),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'Quantity', context.read<DataCenter>().languageCode),
@@ -654,7 +643,7 @@ class MySaleDetails extends StatelessWidget {
                 ),
               ),
               ListTile(
-                subtitle: Text('${sales[MyTable.saleCostField]}'),
+                subtitle: Text(sale.saleCost!.toString()),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'Total cost', context.read<DataCenter>().languageCode),
@@ -663,8 +652,7 @@ class MySaleDetails extends StatelessWidget {
               ),
               ListTile(
                 subtitle: Text(MyTable.formatDateToLanguageCode(
-                    context.read<DataCenter>().languageCode,
-                    sales[MyTable.saleDateField] as String)),
+                    context.read<DataCenter>().languageCode, sale.saleDate!)),
                 title: Text(
                   MyTable.getStringByLanguageCode(
                       'Date', context.read<DataCenter>().languageCode),
