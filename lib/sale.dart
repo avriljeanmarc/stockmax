@@ -48,6 +48,7 @@ class Sale extends StatelessWidget {
                     ),
                     leading: MyIcon(
                       text: items[index].saleCode![0],
+                      oddOrEven: index,
                     ),
                     title: Text(items[index].saleCode!),
                     subtitle: Text('${items[index].itemCode}'),

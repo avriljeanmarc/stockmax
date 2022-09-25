@@ -48,7 +48,10 @@ class Item extends StatelessWidget {
                       ),
                     ),
                     subtitle: Text(items[index].itemDescription!),
-                    leading: MyIcon(text: items[index].itemCode![0]),
+                    leading: MyIcon(
+                      text: items[index].itemCode![0],
+                      oddOrEven: index,
+                    ),
                     title: Text(items[index].itemCode!),
                     trailing: items[index].itemQuantity! <= 100
                         ? Text(
@@ -235,51 +238,6 @@ class AddItem extends StatelessWidget {
                           'Quality', context.read<DataCenter>().languageCode),
                     ),
                   ),
-                  /*SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(MyTable.getStringByLanguageCode(
-                        'Add description field',
-                        context.read<DataCenter>().languageCode)),
-                    value: _value,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _value = value;
-                      });
-                    },
-                  ),
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(MyTable.getStringByLanguageCode(
-                        'Add unit field', context.read<DataCenter>().languageCode)),
-                    value: _value1,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _value1 = value;
-                      });
-                    },
-                  ),
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(MyTable.getStringByLanguageCode('Add category field',
-                        context.read<DataCenter>().languageCode)),
-                    value: _value2,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _value2 = value;
-                      });
-                    },
-                  ),
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(MyTable.getStringByLanguageCode('Add quality field',
-                        context.read<DataCenter>().languageCode)),
-                    value: _value3,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _value3 = value;
-                      });
-                    },
-                  ),*/
                 ],
               ),
             );

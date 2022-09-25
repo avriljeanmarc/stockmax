@@ -872,6 +872,13 @@ class MyTable {
       }
     }
 
+    if (str == 'Export excel sheet') {
+      if (languageCode == 'fr') {
+        _translatedString = 'Exporter une feuille excel';
+        return _translatedString;
+      }
+    }
+
     return _translatedString;
 
 //StatefulBuilder(builder: (context, setState){})

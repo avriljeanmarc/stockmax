@@ -280,6 +280,7 @@ class DataCenter extends ChangeNotifier {
   List<MyItemPriceAtDate> _itemPriceAtDateList = [];
   List<MyCommand> _commandList = [];
   final int lessStockValue = 100;
+  String _flutterError = '';
 
   final StockmaxDatabase _database = StockmaxDatabase.instance;
 
@@ -307,6 +308,12 @@ class DataCenter extends ChangeNotifier {
     _languageCode = languageCode;
 
     _setLanguageCode(languageCode);
+    notifyListeners();
+  }
+
+  String get flutterError => _flutterError;
+  set flutterError(String flutterError) {
+    _flutterError = flutterError;
     notifyListeners();
   }
 
@@ -341,7 +348,6 @@ class DataCenter extends ChangeNotifier {
 
   void deleteDatabase() async {
     await _database.deleteAllData();
-    _database.close();
     //await GenerateData().generate(_database);
     _init();
   }

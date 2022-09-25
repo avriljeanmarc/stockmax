@@ -47,6 +47,7 @@ class Supplier extends StatelessWidget {
                     ),
                     leading: MyIcon(
                       text: suppliers[index].supplierCode![0],
+                      oddOrEven: index,
                     ),
                     title: Text(suppliers[index].supplierCode!),
                     subtitle: Text('${suppliers[index].supplierAddress}'),

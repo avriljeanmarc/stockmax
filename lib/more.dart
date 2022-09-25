@@ -342,15 +342,7 @@ class ImportExcelSheet extends StatelessWidget {
           child: ListView.builder(
             itemCount: myList.length,
             itemBuilder: (context, index) => ListTile(
-              onTap: () => convert(index, context),
-              /*onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MySupplierDetails(
-                    index: index,
-                  ),
-                ),
-              ),*/
+              onTap: () => import(index, context),
               title: Text(MyTable.getStringByLanguageCode(
                   myList[index], context.read<DataCenter>().languageCode)),
             ),
@@ -360,7 +352,7 @@ class ImportExcelSheet extends StatelessWidget {
     );
   }
 
-  void convert(int index, BuildContext context) async {
+  void import(int index, BuildContext context) async {
     FilePickerResult? file = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['xlsx', 'csv', 'xls'],
@@ -370,38 +362,92 @@ class ImportExcelSheet extends StatelessWidget {
       Uint8List bytes = File(file.files.first.path!).readAsBytesSync();
       Excel excel = Excel.decodeBytes(bytes);
       List<Map<String, Object?>> excelSheet = [];
-      List<String> fieldsName = [];
 
-      int i = 0;
-      if (index == 0) {
-        fieldsName.addAll([
-          MyTable.itemCodeField,
-          MyTable.itemQuantityField,
-          MyTable.itemDescriptionField,
-          MyTable.itemUnitField,
-          MyTable.itemCategoryField,
-          MyTable.itemQualityField
-        ]);
-        for (var sheetName in excel.tables.keys) {
-          for (var row in excel.tables[sheetName]?.rows ?? []) {
-            i = 0;
-            Map<String, Object?> json = {};
-
-            for (var data in row) {
-              json.addAll({fieldsName[i]: data?.value ?? ''});
-              i++;
-            }
-
-            excelSheet.add(json);
+      for (String sheetName in excel.tables.keys) {
+        if (index == 0) {
+          for (List<Data?> row in excel.tables[sheetName]?.rows ?? []) {
+            excelSheet.add({
+              MyTable.itemCodeField: row[0]?.value ?? '',
+              MyTable.itemQuantityField:
+                  double.tryParse((row[1]?.value ?? 0.0).toString()),
+              MyTable.itemDescriptionField: row[2]?.value ?? '',
+              MyTable.itemUnitField: row[3]?.value ?? '',
+              MyTable.itemCategoryField: row[4]?.value ?? '',
+              MyTable.itemQualityField: row[5]?.value ?? '',
+            });
           }
 
           for (var json in excelSheet) {
             context.read<DataCenter>().insertItem(MyItem.fromJson(json));
           }
         }
-      }
+        if (index == 1) {
+          for (List<Data?> row in excel.tables[sheetName]?.rows ?? []) {
+            excelSheet.add({
+              MyTable.customerCodeField: row[0]?.value ?? '',
+              MyTable.customerFirstNameField: row[1]?.value ?? '',
+              MyTable.customerLastNameField: row[2]?.value ?? '',
+              MyTable.customerAddressField: row[3]?.value ?? '',
+              MyTable.customerEmailField: row[4]?.value ?? '',
+            });
+          }
 
-      if (index == 1) {}
+          for (var json in excelSheet) {
+            context
+                .read<DataCenter>()
+                .insertCustomer(MyCustomer.fromJson(json));
+          }
+        }
+        if (index == 2) {
+          for (List<Data?> row in excel.tables[sheetName]?.rows ?? []) {
+            excelSheet.add({
+              MyTable.supplierCodeField: row[0]?.value ?? '',
+              MyTable.supplierNameField: row[1]?.value ?? '',
+              MyTable.supplierAddressField: row[2]?.value ?? '',
+              MyTable.supplierEmailField: row[3]?.value ?? '',
+            });
+          }
+
+          for (var json in excelSheet) {
+            context
+                .read<DataCenter>()
+                .insertSupplier(MySupplier.fromJson(json));
+          }
+        }
+      }
     }
   }
+}
+
+class ExportExcelSheet extends StatelessWidget {
+  const ExportExcelSheet({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    List<String> myList = MyTable.menuList;
+    return MyScaffold(
+      showFloatingButton: false,
+      appBarTitle: Text(
+        MyTable.getStringByLanguageCode(
+            'Import excel sheet', context.read<DataCenter>().languageCode),
+      ),
+      child: Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(
+            vertical: 10,
+            horizontal: 10,
+          ),
+          child: ListView.builder(
+            itemCount: myList.length,
+            itemBuilder: (context, index) => ListTile(
+              onTap: () => export(index, context),
+              title: Text(MyTable.getStringByLanguageCode(
+                  myList[index], context.read<DataCenter>().languageCode)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void export(int index, BuildContext context) async {}
 }

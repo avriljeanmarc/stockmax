@@ -7,16 +7,18 @@ import 'more.dart';
 
 class MyIcon extends StatelessWidget {
   final String text;
-  const MyIcon({Key? key, required this.text}) : super(key: key);
+  final int oddOrEven;
+  const MyIcon({Key? key, required this.text, required this.oddOrEven})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 50,
       height: 50,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.green,
+        color: oddOrEven % 2 == 0 ? Colors.orange : Colors.yellow,
       ),
       child: Center(
         child: Text(
@@ -143,6 +145,7 @@ class MyScaffold extends StatelessWidget {
   final bool showFloatingButton;
   final bool showActionsButton;
   final MyDrawer? drawer;
+
   //final MyBottomNavigationBar? bottomNavigationBar;
   final List<Widget>? actions;
   const MyScaffold({
@@ -359,6 +362,44 @@ class MyDrawer extends StatelessWidget {
             thickness: 3,
           ),
           ListTile(
+            trailing: const Icon(
+              Icons.import_export,
+            ),
+            title: Text(MyTable.getStringByLanguageCode(
+                'Export excel sheet', context.read<DataCenter>().languageCode)),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ImportExcelSheet(),
+                ),
+              );
+            },
+          ),
+          const Divider(
+            thickness: 3,
+          ),
+          ListTile(
+            trailing: const Icon(
+              Icons.screen_lock_landscape,
+            ),
+            title: Text(MyTable.getStringByLanguageCode(
+                'Show console', context.read<DataCenter>().languageCode)),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ShowConsole(),
+                ),
+              );
+            },
+          ),
+          const Divider(
+            thickness: 3,
+          ),
+          ListTile(
             title: Text(context.read<DataCenter>().languageCode == 'en'
                 ? MyTable.getStringByLanguageCode('French', 'fr')
                 : MyTable.getStringByLanguageCode('English', 'en')),
@@ -377,7 +418,45 @@ class MyDrawer extends StatelessWidget {
           const Divider(
             thickness: 3,
           ),
+          ListTile(
+            onTap: () => context.read<DataCenter>().deleteDatabase(),
+            tileColor: Colors.red,
+            title: const Text('Delete database'),
+            leading: const Icon(
+              Icons.delete,
+            ),
+          ),
+          const Divider(
+            thickness: 3,
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class ShowConsole extends StatelessWidget {
+  const ShowConsole({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return MyScaffold(
+      actions: [
+        ElevatedButton(
+          child: Text('Clear'),
+          onPressed: () {
+            context.read<DataCenter>().flutterError = '';
+          },
+        ),
+      ],
+      showFloatingButton: false,
+      showActionsButton: true,
+      appBarTitle: Text('Console'),
+      child: Container(
+        margin: const EdgeInsets.symmetric(
+          vertical: 10,
+          horizontal: 10,
+        ),
+        child: Text(context.watch<DataCenter>().flutterError),
       ),
     );
   }

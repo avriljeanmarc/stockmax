@@ -49,7 +49,10 @@ class Command extends StatelessWidget {
                     subtitle: Text(MyTable.formatDateToLanguageCode(
                         context.read<DataCenter>().languageCode,
                         commands[index].commandDate!)),
-                    leading: MyIcon(text: commands[index].itemCode![0]),
+                    leading: MyIcon(
+                      text: commands[index].itemCode![0],
+                      oddOrEven: index,
+                    ),
                     title: Text(commands[index].commandCode!),
                     trailing: Text(
                       '${commands[index].itemQuantity}',

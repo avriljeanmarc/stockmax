@@ -47,6 +47,7 @@ class Customer extends StatelessWidget {
                     ),
                     leading: MyIcon(
                       text: items[index].customerCode![0],
+                      oddOrEven: index,
                     ),
                     title: Text(items[index].customerCode!),
                     subtitle: Text(
