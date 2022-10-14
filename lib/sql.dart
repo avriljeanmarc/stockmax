@@ -124,6 +124,20 @@ class StockmaxDatabase {
 
     ''');
 
+    await db.execute(''' 
+    CREATE TABLE IF NOT EXISTS ${MyTable.wastes}
+    (
+      ${MyTable.wastesCodeField} TEXT PRIMARY KEY,
+      ${MyTable.itemCodeField} TEXT,
+      ${MyTable.itemQuantityField} REAL,
+      ${MyTable.wastesDateField} TEXT,
+      ${MyTable.wastesDescriptionField} TEXT,
+
+      FOREIGN KEY (${MyTable.itemCodeField}) REFERENCES ${MyTable.item} (${MyTable.itemCodeField}) ON UPDATE CASCADE
+    )
+
+    ''');
+
     await db.insert(
         MyTable.customer,
         MyCustomer.copy(const MyCustomer(customerCode: MyTable.customerZero))
@@ -171,6 +185,11 @@ class StockmaxDatabase {
     await db.insert(MyTable.command, command.toJson());
   }
 
+  Future<void> insertWastes(MyWastes wastes) async {
+    final db = await instance.database;
+    await db.insert(MyTable.wastes, wastes.toJson());
+  }
+
   Future<Map<String, Object?>> readRow({
     required String tableName,
     required List<String> columnsList,
@@ -191,6 +210,12 @@ class StockmaxDatabase {
     } else {
       throw Exception('NO DATA FOUND');
     }
+  }
+
+  Future<List<MyWastes>> readAllWastes() async {
+    final db = await instance.database;
+    final result = await db.query(MyTable.wastes);
+    return result.map((json) => MyWastes.fromJson(json)).toList();
   }
 
   Future<List<MyItem>> readAllItems() async {

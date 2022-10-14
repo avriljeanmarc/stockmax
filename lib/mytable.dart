@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'sql.dart';
-import 'model.dart';
+//import 'sql.dart';
+//import 'model.dart';
 
-class GenerateData {
+/*class GenerateData {
   final List<Map<String, Object?>> itemData = [];
   final List<Map<String, Object?>> customerData = [];
   final List<Map<String, Object?>> supplierData = [];
@@ -193,7 +193,7 @@ class GenerateData {
       await db.insertSale(MySale.fromJson(item));
     }*/
   }
-}
+}*/
 
 class MyTable {
   static const item = 'item';
@@ -203,6 +203,10 @@ class MyTable {
   static const supplier = 'supplier';
   static const command = 'command';
   static const itemPriceAtDate = 'ItemPriceAtDate';
+  static const wastes = 'wastes';
+  static const wastesCodeField = 'wastes_code';
+  static const wastesDescriptionField = 'wastes_description';
+  static const wastesDateField = 'wastes_date';
 
   static const customerZero = 'customer_zero';
   static const supplierZero = 'supplier_zero';
@@ -255,6 +259,7 @@ class MyTable {
   static const IconData customizeDataIcon = Icons.engineering;
   static const IconData commandIcon = Icons.store;
   static const IconData itemPriceAtDateIcon = Icons.attach_money;
+  static const IconData WastesIcon = Icons.recycling;
 
   static const List<String> enMonthsOfYear = [
     'Jan.',
@@ -879,6 +884,33 @@ class MyTable {
       }
     }
 
+    if (str == 'Wastes') {
+      if (languageCode == 'fr') {
+        _translatedString = 'Pertes';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'List of wastes') {
+      if (languageCode == 'fr') {
+        _translatedString = 'Liste des pertes';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'Waste added') {
+      if (languageCode == 'fr') {
+        _translatedString = 'Perte ajout\u00E9e';
+        return _translatedString;
+      }
+    }
+
+    if (str == 'New waste') {
+      if (languageCode == 'fr') {
+        _translatedString = 'Nouvelle perte';
+        return _translatedString;
+      }
+    }
     return _translatedString;
 
 //StatefulBuilder(builder: (context, setState){})

@@ -111,40 +111,6 @@ class AddSale extends StatelessWidget {
 
     return MyScaffold(
       actions: [
-        /*StatefulBuilder(
-          builder: (context, setState) {
-            return IconButton(
-              onPressed: () {
-                _formKey.currentState!.save();
-                List<MyItemPriceAtDate> pricesHistory = [];
-                context.read<DataCenter>().itemPriceAtDateList.forEach((price) {
-                  if (price.itemCode == _selectedValue) {
-                    pricesHistory.add(price);
-                  }
-                });
-
-                double _lastPrice = 0.0;
-                DateTime _lastDate = DateTime(1800);
-                for (MyItemPriceAtDate price in pricesHistory) {
-                  if (_lastDate.isBefore(DateTime.parse(price.atDate!))) {
-                    _lastDate = DateTime.parse(price.atDate!);
-                    _lastPrice = price.itemPrice!;
-                  }
-                }
-
-                setState(
-                  () {
-                    _saleCost = (double.tryParse(_itemQuantity)! * _lastPrice)
-                        .toString();
-                  },
-                );
-              },
-              icon: const Icon(
-                Icons.attach_money,
-              ),
-            );
-          },
-        ),*/
         IconButton(
           onPressed: () {
             if (_formKey.currentState!.validate()) {
@@ -344,60 +310,6 @@ class AddSale extends StatelessWidget {
                       ),
                     ),
                   ),
-                  /*StatefulBuilder(builder: (context, setState) {
-                    return TextFormField(
-                      //initialValue: _saleCost,
-                      keyboardType: TextInputType.number,
-                      onSaved: (newValue) => _saleCost = newValue!,
-                      validator: (value) {
-                        if (value != null) {
-                          if (value.isEmpty) {
-                            return MyTable.getStringByLanguageCode(
-                                'Field is required',
-                                context.read<DataCenter>().languageCode);
-                          }
-                        }
-
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        labelText: MyTable.getStringByLanguageCode(
-                            'Total cost', context.read<DataCenter>().languageCode),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(
-                              () {
-                                _saleCost = '1200';
-                              },
-                            );
-                          },
-                          icon: const Icon(Icons.attach_money),
-                        ),
-                      ),
-                    );
-                  }),
-                  TextFormField(
-                    keyboardType: TextInputType.number,
-                    onSaved: (newValue) => _saleCost = newValue!,
-                    validator: (value) {
-                      if (value != null) {
-                        if (value.isEmpty) {
-                          return MyTable.getStringByLanguageCode('Field is required',
-                              context.read<DataCenter>().languageCode);
-                        }
-                      }
-
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: MyTable.getStringByLanguageCode(
-                          'Total cost', context.read<DataCenter>().languageCode),
-                      suffixIcon: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.attach_money),
-                      ),
-                    ),
-                  ),*/
                   TextFormField(
                     controller: TextEditingController(
                         text: _datetime == null
@@ -473,38 +385,7 @@ class AddSale extends StatelessWidget {
                         setState(() {
                           _value = value;
                         });
-                      } /*=> context
-                          .read<DataCenter>()
-                          .addSaleCustomerCodeField = value,*/
-                      ),
-                  /*StatefulBuilder(builder: (context, setState) {
-                    return SwitchListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          MyTable.getStringByLanguageCode('Add customer field',
-                              context.read<DataCenter>().languageCode),
-                        ),
-                        value: _value,
-                        onChanged: (bool value) {
-                          setState(() {
-                            _value = value;
-                          });
-                        } /*=> context
-                          .read<DataCenter>()
-                          .addSaleCustomerCodeField = value,*/
-                        );
-                  }),
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      MyTable.getStringByLanguageCode('Add customer field',
-                          context.read<DataCenter>().languageCode),
-                    ),
-                    value: context.read<DataCenter>().addSaleCustomerCodeField,
-                    onChanged: (bool value) => context
-                        .read<DataCenter>()
-                        .addSaleCustomerCodeField = value,
-                  ),*/
+                      }),
                 ],
               ),
             );

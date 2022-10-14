@@ -3,6 +3,48 @@ import 'sql.dart';
 import 'mytable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+class MyWastes {
+  final String? wastesCode;
+  final String? itemCode;
+  final double? itemQuantity;
+  final String? wastesDate;
+  final String? wastesDescription;
+
+  const MyWastes({
+    this.wastesCode,
+    this.itemCode,
+    this.itemQuantity,
+    this.wastesDate,
+    this.wastesDescription,
+  });
+
+  Map<String, Object?> toJson() => {
+        MyTable.wastesCodeField: wastesCode ?? '',
+        MyTable.itemCodeField: itemCode ?? '',
+        MyTable.itemQuantityField: itemQuantity ?? 0.0,
+        MyTable.wastesDateField: wastesDate ?? '',
+        MyTable.wastesDescriptionField: wastesDescription ?? '',
+      };
+
+  static MyWastes fromJson(Map<String, Object?> json) => MyWastes(
+        wastesCode: json[MyTable.wastesCodeField] as String,
+        itemCode: json[MyTable.itemCodeField] as String,
+        itemQuantity: json[MyTable.itemQuantityField] as double,
+        wastesDate: json[MyTable.wastesDateField] as String,
+        wastesDescription: json[MyTable.wastesDescriptionField] as String,
+      );
+
+  static MyWastes copy(MyWastes wastes) {
+    return MyWastes(
+      wastesCode: wastes.wastesCode ?? '',
+      itemCode: wastes.itemCode ?? '',
+      itemQuantity: wastes.itemQuantity ?? 0.0,
+      wastesDate: wastes.wastesDate ?? '',
+      wastesDescription: wastes.wastesDescription ?? '',
+    );
+  }
+}
+
 class MySupplier {
   final String? supplierCode;
   final String? supplierName;
@@ -279,6 +321,8 @@ class DataCenter extends ChangeNotifier {
   List<MySale> _saleList = [];
   List<MyItemPriceAtDate> _itemPriceAtDateList = [];
   List<MyCommand> _commandList = [];
+  List<MyWastes> _wastesList = [];
+
   final int lessStockValue = 100;
   String _flutterError = '';
 
@@ -341,6 +385,7 @@ class DataCenter extends ChangeNotifier {
       }
     }
     _commandList = await _database.readAllCommands();
+    _wastesList = await _database.readAllWastes();
     await _loadUserSettings();
     //await _database.listTables();
     notifyListeners();
@@ -350,6 +395,12 @@ class DataCenter extends ChangeNotifier {
     await _database.deleteAllData();
     //await GenerateData().generate(_database);
     _init();
+  }
+
+  void insertWastes(MyWastes wastes) async {
+    await _database.insertWastes(wastes);
+    _wastesList.add(wastes);
+    notifyListeners();
   }
 
   void insertItem(MyItem item) async {
@@ -405,6 +456,7 @@ class DataCenter extends ChangeNotifier {
 
     _saleList = await _database.readAllSales();
     _itemPriceAtDateList = await _database.readAllItemPriceAtDates();
+    _wastesList = await _database.readAllWastes();
     notifyListeners();
   }
 
@@ -491,6 +543,7 @@ class DataCenter extends ChangeNotifier {
   List<MySupplier> get supplierList => _supplierList;
   List<MySale> get saleList => _saleList;
   List<MyItemPriceAtDate> get itemPriceAtDateList => _itemPriceAtDateList;
+  List<MyWastes> get wastesList => _wastesList;
 
   @override
   void dispose() {

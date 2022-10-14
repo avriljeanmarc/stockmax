@@ -13,6 +13,7 @@ import 'customer.dart';
 import 'sale.dart';
 import 'supplier.dart';
 import 'command.dart';
+import 'wastes.dart';
 
 class ItemPricesHistory extends StatelessWidget {
   const ItemPricesHistory({Key? key}) : super(key: key);
@@ -217,6 +218,23 @@ class HomeWidget extends StatelessWidget {
             subtitle: '${context.watch<DataCenter>().commandList.length}',
             icon: const Icon(
               MyTable.commandIcon,
+              size: 50,
+              color: Colors.white,
+            ),
+          ),
+          MenuWidget(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Wastes(),
+              ),
+            ),
+            color: Colors.white,
+            title: MyTable.getStringByLanguageCode(
+                'Wastes', context.read<DataCenter>().languageCode),
+            subtitle: '${context.watch<DataCenter>().wastesList.length}',
+            icon: const Icon(
+              MyTable.WastesIcon,
               size: 50,
               color: Colors.white,
             ),

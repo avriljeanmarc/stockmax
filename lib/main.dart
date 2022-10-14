@@ -10,12 +10,12 @@ void main() {
   runZonedGuarded(() {
     runApp(ChangeNotifierProvider<DataCenter>(
       create: (BuildContext context) => DataCenter(),
-      builder: (context, Stockmax) {
+      builder: (context, widget) {
         _context = context;
         return MaterialApp(
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate ,
+            GlobalWidgetsLocalizations.delegate,
           ],
           supportedLocales: const [
             Locale('en'),
